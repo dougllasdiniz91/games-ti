@@ -1,9 +1,18 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps e mais.">
 <title>Classifica TI</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
+/* Base (equivalente ao que a hospedagem de artefatos acrescenta) */
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
 /* Layout: menu em grade de fichas → tela de jogo com a carta da vez fixa no topo e os grupos (ou a matriz) logo abaixo; fluido do celular pequeno ao tablet e desktop */
 :root{
   --bg:#eaeef2; --surface:#ffffff; --ink:#14202b; --muted:#566573; --line:#d2dae2;
@@ -160,7 +169,8 @@ details.gab summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;
 @media (max-height:500px) and (orientation:landscape){ .carta{position:static} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
 </style>
-
+</head>
+<body>
 <div class="wrap" id="app" lang="pt-BR"></div>
 
 <script>
@@ -405,6 +415,53 @@ const JOGOS = [
   [null,"Terraform","IAC"],[null,"Ansible","IAC"],[null,"Puppet","IAC"],[null,"Chef","IAC"],[null,"AWS CloudFormation","IAC"],
   [null,"Argo CD","CD"],[null,"Spinnaker","CD"],[null,"Implantação blue-green","CD"],[null,"Implantação canário (canary)","CD"],[null,"Feature flags (chaves de funcionalidade)","CD"],
   [null,"Prometheus","OBS"],[null,"Grafana","OBS"],[null,"Zabbix","OBS"],[null,"Nagios","OBS"],[null,"ELK (Elasticsearch, Logstash, Kibana)","OBS"],[null,"Jaeger (rastreamento distribuído)","OBS"]]
+},
+{
+  id:"pmbok8proc", nome:"PMBOK 8: processos", rotuloLinha:"Domínio", rotuloColuna:"Área de foco", ver:"40 processos · matriz 7 domínios × 5 áreas de foco", antes:"novo",
+  desc:"Posicione cada processo no domínio de desempenho e na área de foco certos.",
+  grupos:[["GOV", "Governança"],["ESC", "Escopo"],["CRO", "Cronograma"],["FIN", "Finanças"],["PI", "Partes interessadas"],["REC", "Recursos"],["RSC", "Riscos"]],
+  colunas:[["I","Iniciação","Inic."],["P","Planejamento","Plan."],["E","Execução","Exec."],["M","Monitoramento e controle","M&C"],["N","Encerramento","Enc."]],
+  itens:[
+  ["GOV.1", "Iniciar o projeto ou fase", "GOV", "I"],
+  ["GOV.2", "Integrar e alinhar os planos do projeto", "GOV", "P"],
+  ["GOV.3", "Planejar a estratégia de aquisição (sourcing)", "GOV", "P"],
+  ["GOV.4", "Gerenciar a execução do projeto", "GOV", "E"],
+  ["GOV.5", "Gerenciar a garantia da qualidade", "GOV", "E"],
+  ["GOV.6", "Gerenciar o conhecimento do projeto", "GOV", "E"],
+  ["GOV.7", "Monitorar e controlar o desempenho do projeto", "GOV", "M"],
+  ["GOV.8", "Avaliar e implementar mudanças", "GOV", "M"],
+  ["GOV.9", "Encerrar o projeto ou fase", "GOV", "N"],
+  ["ESC.1", "Planejar o gerenciamento do escopo", "ESC", "P"],
+  ["ESC.2", "Elicitar e analisar os requisitos", "ESC", "P"],
+  ["ESC.3", "Definir o escopo", "ESC", "P"],
+  ["ESC.4", "Desenvolver a estrutura do escopo", "ESC", "P"],
+  ["ESC.5", "Monitorar e controlar o escopo", "ESC", "M"],
+  ["ESC.6", "Validar o escopo", "ESC", "M"],
+  ["CRO.1", "Planejar o gerenciamento do cronograma", "CRO", "P"],
+  ["CRO.2", "Desenvolver o cronograma", "CRO", "P"],
+  ["CRO.3", "Monitorar e controlar o cronograma", "CRO", "M"],
+  ["FIN.1", "Planejar o gerenciamento financeiro", "FIN", "P"],
+  ["FIN.2", "Estimar os custos", "FIN", "P"],
+  ["FIN.3", "Desenvolver o orçamento", "FIN", "P"],
+  ["FIN.4", "Monitorar e controlar as finanças", "FIN", "M"],
+  ["PI.1", "Identificar as partes interessadas", "PI", "I"],
+  ["PI.2", "Planejar o engajamento das partes interessadas", "PI", "P"],
+  ["PI.3", "Planejar o gerenciamento das comunicações", "PI", "P"],
+  ["PI.4", "Gerenciar o engajamento das partes interessadas", "PI", "E"],
+  ["PI.5", "Gerenciar as comunicações", "PI", "E"],
+  ["PI.6", "Monitorar o engajamento das partes interessadas", "PI", "M"],
+  ["PI.7", "Monitorar as comunicações", "PI", "M"],
+  ["REC.1", "Planejar o gerenciamento dos recursos", "REC", "P"],
+  ["REC.2", "Estimar os recursos", "REC", "P"],
+  ["REC.3", "Adquirir os recursos", "REC", "E"],
+  ["REC.4", "Liderar a equipe", "REC", "E"],
+  ["REC.5", "Monitorar e controlar os recursos", "REC", "M"],
+  ["RSC.1", "Planejar o gerenciamento dos riscos", "RSC", "P"],
+  ["RSC.2", "Identificar os riscos", "RSC", "P"],
+  ["RSC.3", "Realizar a análise dos riscos", "RSC", "P"],
+  ["RSC.4", "Planejar as respostas aos riscos", "RSC", "P"],
+  ["RSC.5", "Implementar as respostas aos riscos", "RSC", "E"],
+  ["RSC.6", "Monitorar os riscos", "RSC", "M"]]
 }
 ];
 
@@ -412,7 +469,7 @@ const JOGOS = [
 const SECOES = [
   ["Governança e serviços",["cobit2019","itil4","iso38500"]],
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
-  ["Projetos e métodos ágeis",["pmbok8","pmbok7","scrum","xp"]],
+  ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
   ["Dados, IA e redes",["sql","nosql","ia-ml","osi"]]
 ];
@@ -535,7 +592,7 @@ function montarGrupos(j){
 function montarMatriz(j){
   return el("div",{class:"matriz-wrap"},
     el("table",{class:"matriz"},
-      el("thead",{},el("tr",{},el("th",{},el("span",{class:"longo"},"Área \\ Grupo"),el("span",{class:"curto"},"Área")),
+      el("thead",{},el("tr",{},el("th",{},el("span",{class:"longo"},j.rotuloLinha+" \\ "+j.rotuloColuna),el("span",{class:"curto"},j.rotuloLinha)),
         j.colunas.map(([,n,curto])=>el("th",{scope:"col",title:n},el("span",{class:"longo"},n),el("span",{class:"curto"},curto))))),
       el("tbody",{}, j.grupos.map(([g,ng])=>
         el("tr",{},
@@ -600,9 +657,9 @@ function responder(g, c){
     estado.errosPartida.set(idx,(estado.errosPartida.get(idx)||0)+1);
     let dica = "✗ Não é "+g+" · volta para o fim da fila";
     if(J.colunas){
-      if(it[2]===g) dica="✗ Área certa, grupo de processos errado";
-      else if(it[3]===c) dica="✗ Grupo de processos certo, área errada";
-      else dica="✗ Área e grupo de processos errados";
+      if(it[2]===g) dica="✗ Domínio certo, área de foco errada";
+      else if(it[3]===c) dica="✗ Área de foco certa, domínio errado";
+      else dica="✗ Domínio e área de foco errados";
     }
     carta.classList.add("bad");
     selo.textContent=dica;
@@ -656,3 +713,5 @@ function rota(){
 addEventListener("hashchange",rota);
 rota();
 </script>
+</body>
+</html>
