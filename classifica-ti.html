@@ -1,0 +1,658 @@
+<title>Classifica TI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: menu em grade de fichas → tela de jogo com a carta da vez fixa no topo e os grupos (ou a matriz) logo abaixo; fluido do celular pequeno ao tablet e desktop */
+:root{
+  --bg:#eaeef2; --surface:#ffffff; --ink:#14202b; --muted:#566573; --line:#d2dae2;
+  --primary:#1b5a8a; --on-primary:#ffffff; --ok:#1d8556; --bad:#bf3d36;
+  --ok-bg:#e3f4ea; --bad-bg:#fbe7e5;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1319; --surface:#152029; --ink:#e3eaf0; --muted:#94a4b2; --line:#26343f;
+    --primary:#6cb0e4; --on-primary:#0b1a26; --ok:#4cc28d; --bad:#f06b62;
+    --ok-bg:#143326; --bad-bg:#3a1c1a; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1319; --surface:#152029; --ink:#e3eaf0; --muted:#94a4b2; --line:#26343f;
+  --primary:#6cb0e4; --on-primary:#0b1a26; --ok:#4cc28d; --bad:#f06b62;
+  --ok-bg:#143326; --bad-bg:#3a1c1a; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:clamp(14px,1.1vw + 10px,16px);line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:clamp(12px,3vw,24px) 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-size:.85em;letter-spacing:.01em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Menu ---------- */
+.topo{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.topo h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;letter-spacing:-.02em}
+.topo h1 span{color:var(--primary)}
+.topo p{margin:0;color:var(--muted);max-width:62ch}
+.grade{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.ficha{display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:14px 16px;text-decoration:none;color:var(--ink);min-width:0;transition:border-color .15s,transform .15s}
+.ficha:hover{border-color:var(--primary);transform:translateY(-2px)}
+.ficha .linha1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.ficha h2{font-size:1.15rem;font-weight:600}
+.ficha .ver{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);white-space:nowrap}
+.ficha .era{font-size:.78rem;color:var(--muted)}
+.ficha p{margin:0;font-size:.88rem;color:var(--muted)}
+.ficha .rodape{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 8px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.ficha .rodape b{color:var(--ink);font-weight:600}
+.secao{margin-bottom:22px}
+.secao-tit{font-size:.8rem;font-family:var(--f-body);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.nota{margin-top:24px;font-size:.84rem;color:var(--muted);max-width:75ch}
+
+/* ---------- Jogo ---------- */
+.barra{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:12px}
+.voltar{display:inline-flex;align-items:center;min-height:44px;text-decoration:none;color:var(--primary);font-weight:600}
+.barra .titulo{min-width:0;flex:1 1 180px}
+.barra h1{font-size:clamp(1.2rem,3.5vw,1.5rem);font-weight:800}
+.barra .ver{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.barra .acoes{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-size:.9rem;text-decoration:none;color:var(--ink)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
+select.btn{padding:8px}
+.placar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;font-size:.85rem;color:var(--muted);margin-bottom:10px}
+.placar b{font-variant-numeric:tabular-nums;color:var(--ink);font-size:1rem;margin-right:3px}
+.placar .ok b{color:var(--ok)} .placar .bad b{color:var(--bad)}
+.placar label{margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:36px;cursor:pointer}
+.placar input{width:18px;height:18px;accent-color:var(--primary)}
+.progresso{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:12px}
+.progresso i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+
+/* Carta da vez: o resultado aparece no selo ACIMA do nome, e a carta só troca depois */
+.carta{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:2px solid var(--ink);
+  border-radius:var(--r);padding:12px 16px 14px;margin-bottom:14px;box-shadow:0 6px 0 -2px var(--line);transition:border-color .15s,background-color .15s}
+.selo{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);border-radius:999px;padding:2px 0;min-height:24px}
+.carta .txt{font-family:var(--f-display);font-weight:600;font-size:clamp(1.1rem,3.2vw,1.5rem);line-height:1.25;margin-top:4px;min-height:1.25em;overflow-wrap:anywhere}
+.carta.ok{border-color:var(--ok);background:var(--ok-bg)}
+.carta.bad{border-color:var(--bad);background:var(--bad-bg)}
+.carta.ok .selo{color:var(--ok);background:var(--surface);padding:2px 10px}
+.carta.bad .selo{color:var(--bad);background:var(--surface);padding:2px 10px}
+.carta.bad{animation:treme .3s}
+@keyframes treme{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.grupos{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr))}
+.grupo{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0;overflow:hidden}
+.grupo>button{display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;align-items:center;text-align:left;border:0;background:transparent;padding:12px 14px;min-height:60px}
+.grupo>button:hover{background:color-mix(in srgb,var(--primary) 8%,var(--surface))}
+.grupo>button:active{background:color-mix(in srgb,var(--primary) 16%,var(--surface))}
+.grupo .sig{font-family:var(--f-display);font-weight:800;font-size:1.1rem;color:var(--primary)}
+.grupo .nm{font-size:.84rem;color:var(--muted);line-height:1.25;min-width:0}
+.grupo .cont{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);white-space:nowrap}
+.grupo .tecla{display:none}
+.grupo ul{list-style:none;margin:0;padding:8px 14px 10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:.84rem}
+.grupo ul:empty{display:none}
+.grupo li{display:flex;gap:6px;min-width:0}
+.grupo li .mono{color:var(--muted);flex:none}
+.grupo li::before{content:"✓";color:var(--ok);flex:none}
+.oculta-lista .grupo ul{display:none}
+.grupo.flash-ok{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok) inset}
+.grupo.flash-bad{border-color:var(--bad);box-shadow:0 0 0 2px var(--bad) inset}
+
+/* Matriz do PMBOK 6: cabe na tela; em telas estreitas usa rótulos curtos */
+.matriz-wrap{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+table.matriz{border-collapse:collapse;width:100%;table-layout:fixed;font-size:.8rem}
+.matriz th,.matriz td{border:1px solid var(--line);padding:0;vertical-align:top}
+.matriz tr>*:first-child{border-left:0} .matriz tr>*:last-child{border-right:0}
+.matriz thead th{font-family:var(--f-display);font-weight:600;padding:8px 4px;text-align:center;background:var(--bg);line-height:1.2}
+.matriz thead th:first-child{width:24%}
+.matriz tbody th{text-align:left;padding:6px;font-weight:600;background:var(--bg);line-height:1.2;overflow-wrap:break-word;hyphens:auto}
+.matriz tbody th .mono{color:var(--muted)}
+.matriz td button{display:flex;flex-wrap:wrap;align-content:flex-start;gap:3px;width:100%;min-height:48px;border:0;background:transparent;padding:5px}
+.matriz td button:hover{background:color-mix(in srgb,var(--primary) 9%,var(--surface))}
+.matriz .chip{font-family:var(--f-mono);font-size:.7rem;padding:1px 4px;border-radius:4px;background:var(--ok-bg);color:var(--ink)}
+.oculta-lista .matriz .chip{visibility:hidden}
+.matriz td.flash-ok button{box-shadow:0 0 0 3px var(--ok) inset}
+.matriz td.flash-bad button{box-shadow:0 0 0 3px var(--bad) inset}
+.curto{display:none}
+
+.fim{background:var(--surface);border:2px solid var(--ok);border-radius:var(--r);padding:18px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px}
+.fim h2{font-size:1.4rem}
+.fim ul{margin:0;padding-left:18px;font-size:.88rem;display:flex;flex-direction:column;gap:4px}
+.fim .acoes{display:flex;gap:8px;flex-wrap:wrap}
+
+details.gab{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px 14px}
+details.gab summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.gab-col{columns:2 280px;column-gap:24px;padding-bottom:10px;font-size:.84rem}
+.gab-col h3{font-size:.95rem;margin:10px 0 4px;break-after:avoid}
+.gab-col ul{list-style:none;margin:0;padding:0}
+.gab-col li{break-inside:avoid;margin-bottom:3px}
+.gab-col li .mono{color:var(--muted);margin-right:6px}
+
+/* Computador com teclado: mostra os atalhos 1–9 */
+@media (hover:hover) and (pointer:fine){ .grupo .tecla{display:inline;font-family:var(--f-mono);font-size:.7rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;grid-column:3;grid-row:2;justify-self:end} }
+/* Celular */
+@media (max-width:600px){
+  .grupos{grid-template-columns:1fr 1fr;gap:8px}
+  .grupo>button{grid-template-columns:1fr auto;padding:10px 12px;row-gap:2px}
+  .grupo .nm{grid-column:1 / -1;font-size:.78rem}
+  .barra .acoes{width:100%} .barra .acoes>*{flex:1}
+  .placar label{margin-left:0}
+  #alvos:not(.oculta-lista) .grupos{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .longo{display:none} .curto{display:inline}
+  table.matriz{font-size:.72rem}
+  .matriz thead th:first-child{width:30%}
+  .matriz .chip{font-size:.64rem;padding:1px 3px}
+}
+@media (max-width:340px){ .grupos{grid-template-columns:1fr} }
+/* Celular deitado: carta deixa de ser fixa para sobrar espaço */
+@media (max-height:500px) and (orientation:landscape){ .carta{position:static} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+
+<div class="wrap" id="app" lang="pt-BR"></div>
+
+<script>
+/* =====================================================================
+   Conteúdo. Cada jogo: grupos (e, opcionalmente, colunas para matriz).
+   Item: [código, nome, grupo, coluna?]. Nomes resumidos com palavras próprias.
+   ===================================================================== */
+const JOGOS = [
+{
+  id:"cobit2019", nome:"COBIT 2019", ver:"40 objetivos · 5 domínios", antes:"COBIT 4.1 / 5",
+  desc:"Encaixe cada objetivo de governança e gestão no seu domínio.",
+  grupos:[["EDM","Avaliar, Dirigir e Monitorar"],["APO","Alinhar, Planejar e Organizar"],["BAI","Construir, Adquirir e Implementar"],["DSS","Entregar, Servir e Suportar"],["MEA","Monitorar, Avaliar e Analisar"]],
+  itens:[
+  ["EDM01","Garantir a definição e manutenção do framework de governança","EDM"],["EDM02","Garantir a entrega de benefícios","EDM"],["EDM03","Garantir a otimização do risco","EDM"],["EDM04","Garantir a otimização dos recursos","EDM"],["EDM05","Garantir o engajamento das partes interessadas","EDM"],
+  ["APO01","Gerenciar o framework de gestão de I&T","APO"],["APO02","Gerenciar a estratégia","APO"],["APO03","Gerenciar a arquitetura corporativa","APO"],["APO04","Gerenciar a inovação","APO"],["APO05","Gerenciar o portfólio","APO"],["APO06","Gerenciar orçamento e custos","APO"],["APO07","Gerenciar recursos humanos","APO"],["APO08","Gerenciar relacionamentos","APO"],["APO09","Gerenciar acordos de serviço","APO"],["APO10","Gerenciar fornecedores","APO"],["APO11","Gerenciar a qualidade","APO"],["APO12","Gerenciar o risco","APO"],["APO13","Gerenciar a segurança","APO"],["APO14","Gerenciar os dados","APO"],
+  ["BAI01","Gerenciar programas","BAI"],["BAI02","Gerenciar a definição de requisitos","BAI"],["BAI03","Gerenciar a identificação e construção de soluções","BAI"],["BAI04","Gerenciar disponibilidade e capacidade","BAI"],["BAI05","Gerenciar a mudança organizacional","BAI"],["BAI06","Gerenciar mudanças de TI","BAI"],["BAI07","Gerenciar a aceitação e transição de mudanças de TI","BAI"],["BAI08","Gerenciar o conhecimento","BAI"],["BAI09","Gerenciar ativos","BAI"],["BAI10","Gerenciar a configuração","BAI"],["BAI11","Gerenciar projetos","BAI"],
+  ["DSS01","Gerenciar operações","DSS"],["DSS02","Gerenciar requisições de serviço e incidentes","DSS"],["DSS03","Gerenciar problemas","DSS"],["DSS04","Gerenciar a continuidade","DSS"],["DSS05","Gerenciar serviços de segurança","DSS"],["DSS06","Gerenciar controles de processos de negócio","DSS"],
+  ["MEA01","Gerenciar o monitoramento de desempenho e conformidade","MEA"],["MEA02","Gerenciar o sistema de controle interno","MEA"],["MEA03","Gerenciar a conformidade com requisitos externos","MEA"],["MEA04","Gerenciar a asseguração (assurance)","MEA"]]
+},
+{
+  id:"itil4", nome:"ITIL 4", ver:"34 práticas · 3 categorias", antes:"ITIL 2011 (v3)",
+  desc:"Classifique cada prática de gerenciamento na sua categoria.",
+  grupos:[["GER","Práticas de gerenciamento geral"],["SRV","Práticas de gerenciamento de serviço"],["TEC","Práticas de gerenciamento técnico"]],
+  itens:[
+  [null,"Gerenciamento de arquitetura","GER"],[null,"Melhoria contínua","GER"],[null,"Gerenciamento de segurança da informação","GER"],[null,"Gerenciamento do conhecimento","GER"],[null,"Medição e relatórios","GER"],[null,"Gerenciamento de mudança organizacional","GER"],[null,"Gerenciamento de portfólio","GER"],[null,"Gerenciamento de projetos","GER"],[null,"Gerenciamento de relacionamento","GER"],[null,"Gerenciamento de riscos","GER"],[null,"Gerenciamento financeiro de serviços","GER"],[null,"Gerenciamento de estratégia","GER"],[null,"Gerenciamento de fornecedores","GER"],[null,"Gerenciamento de força de trabalho e talentos","GER"],
+  [null,"Gerenciamento de disponibilidade","SRV"],[null,"Análise de negócio","SRV"],[null,"Gerenciamento de capacidade e desempenho","SRV"],[null,"Habilitação de mudança","SRV"],[null,"Gerenciamento de incidente","SRV"],[null,"Gerenciamento de ativos de TI","SRV"],[null,"Monitoramento e gerenciamento de eventos","SRV"],[null,"Gerenciamento de problema","SRV"],[null,"Gerenciamento de liberação","SRV"],[null,"Gerenciamento do catálogo de serviços","SRV"],[null,"Gerenciamento da configuração de serviço","SRV"],[null,"Gerenciamento de continuidade de serviço","SRV"],[null,"Desenho de serviço","SRV"],[null,"Central de serviço","SRV"],[null,"Gerenciamento de nível de serviço","SRV"],[null,"Gerenciamento de requisição de serviço","SRV"],[null,"Validação e teste de serviço","SRV"],
+  [null,"Gerenciamento de implantação","TEC"],[null,"Gerenciamento de infraestrutura e plataforma","TEC"],[null,"Desenvolvimento e gerenciamento de software","TEC"]]
+},
+{
+  id:"pmbok8", nome:"PMBOK 8", ver:"6 princípios · 7 domínios · 5 áreas de foco", antes:"novo",
+  desc:"Diga se cada item é um princípio, um domínio de desempenho ou uma área de foco da 8ª edição.",
+  grupos:[["PRI","Princípios"],["DOM","Domínios de desempenho"],["FOC","Áreas de foco"]],
+  itens:[
+  [null,"Adotar uma visão holística","PRI"],[null,"Focar no valor","PRI"],[null,"Incorporar a qualidade","PRI"],[null,"Liderar com responsabilidade (accountability)","PRI"],[null,"Integrar a sustentabilidade","PRI"],[null,"Construir uma cultura de empoderamento","PRI"],
+  [null,"Governança","DOM"],[null,"Escopo","DOM"],[null,"Cronograma","DOM"],[null,"Finanças","DOM"],[null,"Partes interessadas","DOM"],[null,"Recursos","DOM"],[null,"Riscos","DOM"],
+  [null,"Iniciação","FOC"],[null,"Planejamento","FOC"],[null,"Execução","FOC"],[null,"Monitoramento e controle","FOC"],[null,"Encerramento","FOC"]]
+},
+{
+  id:"pmbok7", nome:"PMBOK 7", ver:"12 princípios · 8 domínios", antes:"novo",
+  desc:"Diga se cada item é um princípio de gerenciamento ou um domínio de desempenho.",
+  grupos:[["PRI","Princípios de gerenciamento de projetos"],["DOM","Domínios de desempenho do projeto"]],
+  itens:[
+  [null,"Ser um administrador diligente, respeitoso e cuidadoso","PRI"],[null,"Criar um ambiente colaborativo para a equipe","PRI"],[null,"Engajar-se efetivamente com as partes interessadas","PRI"],[null,"Focar no valor","PRI"],[null,"Reconhecer, avaliar e responder às interações do sistema","PRI"],[null,"Demonstrar comportamentos de liderança","PRI"],[null,"Adaptar conforme o contexto","PRI"],[null,"Incorporar qualidade nos processos e nas entregas","PRI"],[null,"Navegar na complexidade","PRI"],[null,"Otimizar as respostas aos riscos","PRI"],[null,"Adotar adaptabilidade e resiliência","PRI"],[null,"Possibilitar a mudança para alcançar o estado futuro","PRI"],
+  [null,"Partes interessadas","DOM"],[null,"Equipe","DOM"],[null,"Abordagem de desenvolvimento e ciclo de vida","DOM"],[null,"Planejamento","DOM"],[null,"Trabalho do projeto","DOM"],[null,"Entrega","DOM"],[null,"Medição","DOM"],[null,"Incerteza","DOM"]]
+},
+{
+  id:"iso27002", nome:"ISO/IEC 27002:2022", ver:"93 controles · 4 temas", antes:"27002:2006 / 2013",
+  desc:"Agrupe cada controle no tema certo: organizacional, pessoas, físico ou tecnológico.",
+  grupos:[["5","Controles organizacionais"],["6","Controles de pessoas"],["7","Controles físicos"],["8","Controles tecnológicos"]],
+  itens:[
+  ["5.1","Políticas de segurança da informação","5"],["5.2","Papéis e responsabilidades de segurança da informação","5"],["5.3","Segregação de funções","5"],["5.4","Responsabilidades da direção","5"],["5.5","Contato com autoridades","5"],["5.6","Contato com grupos de interesse especial","5"],["5.7","Inteligência de ameaças","5"],["5.8","Segurança da informação no gerenciamento de projetos","5"],["5.9","Inventário de informações e outros ativos associados","5"],["5.10","Uso aceitável de informações e ativos","5"],["5.11","Devolução de ativos","5"],["5.12","Classificação das informações","5"],["5.13","Rotulagem de informações","5"],["5.14","Transferência de informações","5"],["5.15","Controle de acesso","5"],["5.16","Gestão de identidade","5"],["5.17","Informações de autenticação","5"],["5.18","Direitos de acesso","5"],["5.19","Segurança da informação nas relações com fornecedores","5"],["5.20","Segurança da informação nos contratos com fornecedores","5"],["5.21","Segurança da informação na cadeia de fornecimento de TIC","5"],["5.22","Monitoramento e gestão de mudanças nos serviços de fornecedores","5"],["5.23","Segurança da informação no uso de serviços em nuvem","5"],["5.24","Planejamento e preparação da gestão de incidentes","5"],["5.25","Avaliação e decisão sobre eventos de segurança","5"],["5.26","Resposta a incidentes de segurança da informação","5"],["5.27","Aprendizado com incidentes de segurança da informação","5"],["5.28","Coleta de evidências","5"],["5.29","Segurança da informação durante uma disrupção","5"],["5.30","Prontidão de TIC para a continuidade de negócios","5"],["5.31","Requisitos legais, estatutários, regulamentares e contratuais","5"],["5.32","Direitos de propriedade intelectual","5"],["5.33","Proteção de registros","5"],["5.34","Privacidade e proteção de dados pessoais","5"],["5.35","Análise crítica independente da segurança da informação","5"],["5.36","Conformidade com políticas, regras e normas de segurança","5"],["5.37","Procedimentos de operação documentados","5"],
+  ["6.1","Seleção de pessoal","6"],["6.2","Termos e condições de contratação","6"],["6.3","Conscientização, educação e treinamento em segurança","6"],["6.4","Processo disciplinar","6"],["6.5","Responsabilidades após encerramento ou mudança de contratação","6"],["6.6","Acordos de confidencialidade ou não divulgação","6"],["6.7","Trabalho remoto","6"],["6.8","Relato de eventos de segurança da informação","6"],
+  ["7.1","Perímetros de segurança física","7"],["7.2","Entrada física","7"],["7.3","Segurança de escritórios, salas e instalações","7"],["7.4","Monitoramento da segurança física","7"],["7.5","Proteção contra ameaças físicas e ambientais","7"],["7.6","Trabalho em áreas seguras","7"],["7.7","Mesa limpa e tela limpa","7"],["7.8","Localização e proteção de equipamentos","7"],["7.9","Segurança de ativos fora das instalações","7"],["7.10","Mídias de armazenamento","7"],["7.11","Serviços de infraestrutura (utilidades)","7"],["7.12","Segurança do cabeamento","7"],["7.13","Manutenção de equipamentos","7"],["7.14","Descarte seguro ou reutilização de equipamentos","7"],
+  ["8.1","Dispositivos endpoint do usuário","8"],["8.2","Direitos de acesso privilegiado","8"],["8.3","Restrição de acesso à informação","8"],["8.4","Acesso ao código-fonte","8"],["8.5","Autenticação segura","8"],["8.6","Gestão de capacidade","8"],["8.7","Proteção contra malware","8"],["8.8","Gestão de vulnerabilidades técnicas","8"],["8.9","Gestão de configuração","8"],["8.10","Exclusão de informações","8"],["8.11","Mascaramento de dados","8"],["8.12","Prevenção de vazamento de dados","8"],["8.13","Backup das informações","8"],["8.14","Redundância dos recursos de processamento","8"],["8.15","Registro de logs","8"],["8.16","Atividades de monitoramento","8"],["8.17","Sincronização de relógios","8"],["8.18","Uso de programas utilitários privilegiados","8"],["8.19","Instalação de software em sistemas operacionais","8"],["8.20","Segurança de redes","8"],["8.21","Segurança dos serviços de rede","8"],["8.22","Segregação de redes","8"],["8.23","Filtragem da web","8"],["8.24","Uso de criptografia","8"],["8.25","Ciclo de vida de desenvolvimento seguro","8"],["8.26","Requisitos de segurança de aplicações","8"],["8.27","Arquitetura de sistemas seguros e princípios de engenharia","8"],["8.28","Codificação segura","8"],["8.29","Testes de segurança no desenvolvimento e na aceitação","8"],["8.30","Desenvolvimento terceirizado","8"],["8.31","Separação dos ambientes de desenvolvimento, teste e produção","8"],["8.32","Gestão de mudanças","8"],["8.33","Informações de teste","8"],["8.34","Proteção de sistemas durante testes de auditoria","8"]]
+},
+{
+  id:"iso25010", nome:"ISO/IEC 25010:2023", ver:"40 subcaracterísticas · 9 características", antes:"ISO 9126",
+  desc:"Associe cada subcaracterística de qualidade de produto à sua característica.",
+  grupos:[["ADF","Adequação funcional"],["EFD","Eficiência de desempenho"],["CMP","Compatibilidade"],["INT","Capacidade de interação"],["CNF","Confiabilidade"],["SEG","Segurança (security)"],["MAN","Manutenibilidade"],["FLX","Flexibilidade"],["PRT","Proteção (safety)"]],
+  itens:[
+  [null,"Completude funcional","ADF"],[null,"Correção funcional","ADF"],[null,"Pertinência funcional","ADF"],
+  [null,"Comportamento em relação ao tempo","EFD"],[null,"Utilização de recursos","EFD"],[null,"Capacidade","EFD"],
+  [null,"Coexistência","CMP"],[null,"Interoperabilidade","CMP"],
+  [null,"Reconhecimento de adequação","INT"],[null,"Aprendizagem","INT"],[null,"Operabilidade","INT"],[null,"Proteção contra erro do usuário","INT"],[null,"Engajamento do usuário","INT"],[null,"Inclusividade","INT"],[null,"Assistência ao usuário","INT"],[null,"Autodescritividade","INT"],
+  [null,"Ausência de falhas","CNF"],[null,"Disponibilidade","CNF"],[null,"Tolerância a falhas","CNF"],[null,"Recuperabilidade","CNF"],
+  [null,"Confidencialidade","SEG"],[null,"Integridade","SEG"],[null,"Não repúdio","SEG"],[null,"Responsabilização","SEG"],[null,"Autenticidade","SEG"],[null,"Resistência","SEG"],
+  [null,"Modularidade","MAN"],[null,"Reusabilidade","MAN"],[null,"Analisabilidade","MAN"],[null,"Modificabilidade","MAN"],[null,"Testabilidade","MAN"],
+  [null,"Adaptabilidade","FLX"],[null,"Escalabilidade","FLX"],[null,"Instalabilidade","FLX"],[null,"Substituibilidade","FLX"],
+  [null,"Restrição operacional","PRT"],[null,"Identificação de riscos","PRT"],[null,"Falha segura","PRT"],[null,"Alerta de perigo","PRT"],[null,"Integração segura","PRT"]]
+},
+{
+  id:"gof", nome:"Padrões GoF", ver:"23 padrões · 3 propósitos", antes:"mantido",
+  desc:"Classifique cada padrão de projeto pelo propósito: criação, estrutura ou comportamento.",
+  grupos:[["CRI","Padrões de criação"],["EST","Padrões estruturais"],["COM","Padrões comportamentais"]],
+  itens:[
+  [null,"Abstract Factory","CRI"],[null,"Builder","CRI"],[null,"Factory Method","CRI"],[null,"Prototype","CRI"],[null,"Singleton","CRI"],
+  [null,"Adapter","EST"],[null,"Bridge","EST"],[null,"Composite","EST"],[null,"Decorator","EST"],[null,"Facade","EST"],[null,"Flyweight","EST"],[null,"Proxy","EST"],
+  [null,"Chain of Responsibility","COM"],[null,"Command","COM"],[null,"Interpreter","COM"],[null,"Iterator","COM"],[null,"Mediator","COM"],[null,"Memento","COM"],[null,"Observer","COM"],[null,"State","COM"],[null,"Strategy","COM"],[null,"Template Method","COM"],[null,"Visitor","COM"]]
+},
+{
+  id:"uml25", nome:"UML 2.5", ver:"14 diagramas · 3 grupos", antes:"UML",
+  desc:"Separe os diagramas em estruturais, comportamentais e de interação.",
+  grupos:[["EST","Diagramas estruturais"],["CMP","Diagramas comportamentais"],["INT","Diagramas de interação (subtipo de comportamental)"]],
+  itens:[
+  [null,"Diagrama de classes","EST"],[null,"Diagrama de objetos","EST"],[null,"Diagrama de componentes","EST"],[null,"Diagrama de implantação","EST"],[null,"Diagrama de pacotes","EST"],[null,"Diagrama de estrutura composta","EST"],[null,"Diagrama de perfil","EST"],
+  [null,"Diagrama de casos de uso","CMP"],[null,"Diagrama de atividades","CMP"],[null,"Diagrama de máquina de estados","CMP"],
+  [null,"Diagrama de sequência","INT"],[null,"Diagrama de comunicação","INT"],[null,"Diagrama de visão geral de interação","INT"],[null,"Diagrama de tempo","INT"]]
+},
+{
+  id:"sql", nome:"SQL: tipos de comando", ver:"18 comandos · 5 subconjuntos", antes:"novo",
+  desc:"Classifique cada comando SQL em DDL, DML, DQL, DCL ou DTL/TCL.",
+  grupos:[["DDL","Definição de dados (estrutura)"],["DML","Manipulação de dados"],["DQL","Consulta de dados"],["DCL","Controle de acesso"],["DTL","Controle de transações (também chamado TCL)"]],
+  itens:[
+  [null,"CREATE","DDL"],[null,"ALTER","DDL"],[null,"DROP","DDL"],[null,"TRUNCATE","DDL"],
+  [null,"INSERT","DML"],[null,"UPDATE","DML"],[null,"DELETE","DML"],[null,"MERGE","DML"],
+  [null,"SELECT","DQL"],
+  [null,"GRANT","DCL"],[null,"REVOKE","DCL"],[null,"DENY (SQL Server)","DCL"],
+  [null,"COMMIT","DTL"],[null,"ROLLBACK","DTL"],[null,"SAVEPOINT","DTL"],[null,"SET TRANSACTION","DTL"],[null,"BEGIN TRANSACTION","DTL"],[null,"RELEASE SAVEPOINT","DTL"]]
+},
+{
+  id:"nosql", nome:"Bancos NoSQL", ver:"22 itens · 4 modelos", antes:"novo",
+  desc:"Ligue cada produto ou característica ao seu modelo de dados NoSQL.",
+  grupos:[["KV","Chave-valor"],["DOC","Orientado a documentos"],["COL","Família de colunas (colunar)"],["GRF","Orientado a grafos"]],
+  itens:[
+  [null,"Redis","KV"],[null,"Memcached","KV"],[null,"Riak KV","KV"],[null,"Amazon DynamoDB","KV"],[null,"Acesso direto por uma chave única a um valor opaco; ótimo para cache e sessões","KV"],
+  [null,"MongoDB","DOC"],[null,"CouchDB","DOC"],[null,"Couchbase","DOC"],[null,"Google Firestore","DOC"],[null,"Registros semiestruturados em JSON ou BSON, com esquema flexível","DOC"],
+  [null,"Apache Cassandra","COL"],[null,"Apache HBase","COL"],[null,"Google Bigtable","COL"],[null,"ScyllaDB","COL"],[null,"Colunas agrupadas em famílias, otimizado para gravação massiva e distribuída","COL"],
+  [null,"Neo4j","GRF"],[null,"Amazon Neptune","GRF"],[null,"JanusGraph","GRF"],[null,"TigerGraph","GRF"],[null,"Nós e arestas com propriedades; ideal para redes sociais e recomendações","GRF"],[null,"Consultas com Cypher ou Gremlin","GRF"],[null,"Particionamento com anel de hashing consistente e consultas em CQL","COL"]]
+},
+{
+  id:"ia-ml", nome:"IA: aprendizado de máquina", ver:"34 itens · 3 paradigmas", antes:"novo",
+  desc:"Diga se cada algoritmo ou tarefa é de aprendizado supervisionado, não supervisionado ou por reforço.",
+  grupos:[["SUP","Supervisionado (dados rotulados)"],["NSUP","Não supervisionado (sem rótulos)"],["REF","Por reforço (recompensas)"]],
+  itens:[
+  [null,"Regressão linear","SUP"],[null,"Regressão logística","SUP"],[null,"Árvore de decisão","SUP"],[null,"Random Forest","SUP"],[null,"Máquina de vetores de suporte (SVM)","SUP"],[null,"K vizinhos mais próximos (KNN)","SUP"],[null,"Naive Bayes","SUP"],[null,"Gradient Boosting (XGBoost, LightGBM)","SUP"],[null,"Perceptron","SUP"],
+  [null,"Classificar e-mails em spam ou não spam","SUP"],[null,"Prever o preço de um imóvel a partir de vendas anteriores","SUP"],[null,"Diagnóstico a partir de exames já laudados","SUP"],
+  [null,"K-means","NSUP"],[null,"Agrupamento hierárquico","NSUP"],[null,"DBSCAN","NSUP"],[null,"Análise de componentes principais (PCA)","NSUP"],[null,"Apriori (regras de associação)","NSUP"],[null,"FP-Growth","NSUP"],[null,"Modelos de mistura gaussiana (GMM)","NSUP"],[null,"Mapas auto-organizáveis (SOM/Kohonen)","NSUP"],[null,"t-SNE","NSUP"],[null,"Isolation Forest","NSUP"],
+  [null,"Segmentar clientes por comportamento de compra","NSUP"],[null,"Análise de cesta de compras","NSUP"],[null,"Reduzir a dimensionalidade de um conjunto de dados","NSUP"],[null,"Detectar anomalias sem exemplos rotulados","NSUP"],
+  [null,"Q-Learning","REF"],[null,"SARSA","REF"],[null,"Deep Q-Network (DQN)","REF"],[null,"Gradiente de política (REINFORCE, PPO)","REF"],[null,"Processo de decisão de Markov (agente, estado, ação, recompensa)","REF"],
+  [null,"Robô que aprende a andar por tentativa e erro","REF"],[null,"Agente que aprende a jogar xadrez ou Go jogando","REF"],[null,"Equilíbrio entre exploração e explotação (exploration × exploitation)","REF"]]
+},
+{
+  id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
+  desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
+  grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
+  itens:[
+  [null,"RS-232","1"],[null,"V.35","1"],[null,"100BASE-TX (cabo par trançado)","1"],[null,"DSL","1"],[null,"SONET/SDH","1"],[null,"Hub","1"],[null,"Repetidor","1"],[null,"Unidade de dados: bit","1"],
+  [null,"Ethernet (IEEE 802.3)","2"],[null,"PPP","2"],[null,"HDLC","2"],[null,"Frame Relay","2"],[null,"STP (Spanning Tree)","2"],[null,"VLAN IEEE 802.1Q","2"],[null,"Switch (comutador de camada 2)","2"],[null,"Endereço MAC","2"],[null,"Unidade de dados: quadro","2"],
+  [null,"IPv4","3"],[null,"IPv6","3"],[null,"ICMP","3"],[null,"IGMP","3"],[null,"IPsec","3"],[null,"OSPF","3"],[null,"Roteador","3"],[null,"Unidade de dados: pacote","3"],
+  [null,"TCP","4"],[null,"UDP","4"],[null,"SCTP","4"],[null,"Unidade de dados: segmento","4"],
+  [null,"NetBIOS","5"],[null,"RPC","5"],[null,"SOCKS","5"],
+  [null,"JPEG","6"],[null,"MPEG","6"],[null,"ASCII / EBCDIC","6"],[null,"XDR","6"],
+  [null,"HTTP","7"],[null,"FTP","7"],[null,"SMTP","7"],[null,"POP3","7"],[null,"IMAP","7"],[null,"DNS","7"],[null,"DHCP","7"],[null,"SNMP","7"],[null,"SSH","7"],[null,"Telnet","7"],[null,"LDAP","7"]]
+},
+{
+  id:"iso27001", nome:"ISO/IEC 27001:2022", ver:"Cláusulas 4 a 10 do SGSI", antes:"novo",
+  desc:"Encaixe cada requisito do SGSI na cláusula da norma.",
+  grupos:[["4","Contexto da organização"],["5","Liderança"],["6","Planejamento"],["7","Apoio (suporte)"],["8","Operação"],["9","Avaliação de desempenho"],["10","Melhoria"]],
+  itens:[
+  ["4.1","Entender a organização e seu contexto","4"],["4.2","Entender as necessidades e expectativas das partes interessadas","4"],["4.3","Determinar o escopo do SGSI","4"],["4.4","Estabelecer, implementar, manter e melhorar o SGSI","4"],
+  ["5.1","Liderança e comprometimento da Alta Direção","5"],["5.2","Política de segurança da informação","5"],["5.3","Papéis, responsabilidades e autoridades organizacionais","5"],
+  ["6.1","Ações para tratar riscos e oportunidades","6"],["6.1.2","Definir e aplicar um processo de avaliação de riscos","6"],["6.1.3","Definir e aplicar um processo de tratamento de riscos","6"],["6.1.3 d","Elaborar a Declaração de Aplicabilidade","6"],["6.2","Objetivos de segurança da informação e como alcançá-los","6"],["6.3","Planejamento de mudanças no SGSI","6"],
+  ["7.1","Recursos","7"],["7.2","Competência","7"],["7.3","Conscientização","7"],["7.4","Comunicação","7"],["7.5","Informação documentada","7"],
+  ["8.1","Planejamento e controle operacionais","8"],["8.2","Executar avaliações de riscos em intervalos planejados","8"],["8.3","Implementar o plano de tratamento de riscos","8"],
+  ["9.1","Monitoramento, medição, análise e avaliação","9"],["9.2","Auditoria interna","9"],["9.3","Análise crítica pela direção","9"],
+  ["10.1","Melhoria contínua","10"],["10.2","Não conformidade e ação corretiva","10"]]
+},
+{
+  id:"iso27005", nome:"ISO/IEC 27005:2022", ver:"Processo de gestão de riscos", antes:"novo",
+  desc:"Associe cada atividade à etapa do processo de gestão de riscos de segurança da informação.",
+  grupos:[["CTX","Estabelecimento do contexto"],["IDE","Identificação de riscos"],["ANA","Análise de riscos"],["AVA","Avaliação de riscos (evaluation)"],["TRA","Tratamento de riscos"],["COM","Comunicação e consulta"],["MON","Monitoramento e análise crítica"]],
+  itens:[
+  [null,"Definir os critérios de aceitação de riscos","CTX"],[null,"Definir as escalas de consequência e de probabilidade a usar","CTX"],[null,"Considerar requisitos das partes interessadas e o escopo da gestão de riscos","CTX"],
+  [null,"Levantar fontes de risco, eventos e cenários","IDE"],[null,"Identificar ameaças e vulnerabilidades","IDE"],[null,"Identificar os controles já existentes","IDE"],[null,"Definir os proprietários (donos) dos riscos","IDE"],
+  [null,"Estimar as consequências potenciais","ANA"],[null,"Estimar a probabilidade de ocorrência","ANA"],[null,"Determinar o nível de cada risco","ANA"],
+  [null,"Comparar os resultados com os critérios de risco","AVA"],[null,"Priorizar os riscos para tratamento","AVA"],
+  [null,"Modificar o risco aplicando controles","TRA"],[null,"Evitar o risco eliminando a atividade","TRA"],[null,"Compartilhar o risco (seguro, terceirização)","TRA"],[null,"Reter (aceitar) o risco conscientemente","TRA"],[null,"Formular o plano de tratamento de riscos","TRA"],[null,"Obter do proprietário a aceitação dos riscos residuais","TRA"],
+  [null,"Trocar informações sobre riscos com as partes interessadas","COM"],[null,"Consultar especialistas e tomadores de decisão durante todo o processo","COM"],
+  [null,"Acompanhar mudanças em ameaças, ativos e contexto","MON"],[null,"Rever periodicamente se o processo de gestão de riscos continua adequado","MON"]]
+},
+{
+  id:"iso22301", nome:"Continuidade de negócios (ISO 22301:2019)", ver:"Cláusula 8: operação", antes:"novo",
+  desc:"Encaixe cada atividade na etapa da gestão de continuidade de negócios.",
+  grupos:[["BIA","Análise de impacto nos negócios (8.2)"],["RSK","Avaliação de riscos (8.2)"],["EST","Estratégias e soluções (8.3)"],["PLA","Planos e procedimentos (8.4)"],["EXE","Programa de exercícios (8.5)"],["AVL","Avaliação da documentação e capacidades (8.6)"]],
+  itens:[
+  [null,"Identificar as atividades que sustentam os produtos e serviços","BIA"],[null,"Avaliar como o impacto de uma interrupção cresce ao longo do tempo","BIA"],[null,"Definir o período máximo tolerável de interrupção (MTPD)","BIA"],[null,"Definir o tempo objetivo de recuperação (RTO)","BIA"],[null,"Definir o ponto objetivo de recuperação (RPO)","BIA"],[null,"Identificar dependências e recursos das atividades priorizadas","BIA"],
+  [null,"Identificar os riscos de interrupção das atividades priorizadas","RSK"],[null,"Analisar e avaliar os riscos de interrupção","RSK"],
+  [null,"Escolher como proteger, estabilizar, continuar e recuperar as atividades","EST"],[null,"Definir os recursos necessários: pessoas, informação, instalações e fornecedores","EST"],[null,"Contratar um site alternativo de processamento","EST"],
+  [null,"Estabelecer a estrutura de resposta e as equipes","PLA"],[null,"Definir alertas e comunicação durante o incidente","PLA"],[null,"Documentar os planos de continuidade de negócios","PLA"],[null,"Documentar o retorno às operações normais","PLA"],
+  [null,"Executar testes baseados em cenários","EXE"],[null,"Emitir relatório pós-exercício com recomendações","EXE"],
+  [null,"Verificar se planos e capacidades continuam adequados e eficazes","AVL"],[null,"Rever a documentação após incidentes ou mudanças relevantes","AVL"]]
+},
+{
+  id:"iso38500", nome:"ISO/IEC 38500:2015", ver:"6 princípios · modelo Avaliar-Dirigir-Monitorar", antes:"novo",
+  desc:"Associe cada descrição a um princípio da governança de TI ou a uma tarefa do modelo ADM.",
+  grupos:[["RES","Princípio: Responsabilidade"],["EST","Princípio: Estratégia"],["AQU","Princípio: Aquisição"],["DES","Princípio: Desempenho"],["CNF","Princípio: Conformidade"],["CHU","Princípio: Comportamento humano"],["AVA","Tarefa: Avaliar"],["DIR","Tarefa: Dirigir"],["MON","Tarefa: Monitorar"]],
+  itens:[
+  [null,"Pessoas e grupos entendem e aceitam suas responsabilidades pela oferta e pela demanda de TI","RES"],[null,"Quem responde por uma ação também tem autoridade para executá-la","RES"],
+  [null,"A estratégia de negócio considera as capacidades atuais e futuras da TI","EST"],[null,"Os planos de TI atendem às necessidades atuais e contínuas da estratégia do negócio","EST"],
+  [null,"Investimentos em TI são feitos por razões válidas, com análise adequada e contínua","AQU"],[null,"Decisões de compra transparentes, equilibrando benefícios, oportunidades, custos e riscos","AQU"],
+  [null,"A TI atende à organização com serviços e níveis de qualidade adequados às necessidades","DES"],
+  [null,"A TI cumpre a legislação e a regulamentação obrigatórias","CNF"],[null,"Políticas e práticas de TI são definidas, implementadas e cobradas","CNF"],
+  [null,"Políticas e decisões de TI respeitam as necessidades das pessoas envolvidas no processo","CHU"],
+  [null,"Examinar o uso atual e futuro da TI, considerando pressões internas e externas","AVA"],
+  [null,"Atribuir responsabilidades e orientar a preparação e execução de planos e políticas","DIR"],
+  [null,"Acompanhar, com sistemas de medição, o desempenho da TI e a conformidade","MON"]]
+},
+{
+  id:"bpmn", nome:"BPMN 2.0", ver:"Elementos de notação", antes:"novo",
+  desc:"Classifique cada elemento de notação na sua categoria.",
+  grupos:[["EVT","Eventos"],["ATV","Atividades"],["GTW","Gateways (desvios)"],["CON","Objetos de conexão"],["RAI","Swimlanes (piscinas e raias)"],["DAD","Dados"],["ART","Artefatos"]],
+  itens:[
+  [null,"Evento de início (círculo de borda fina)","EVT"],[null,"Evento intermediário (círculo de borda dupla)","EVT"],[null,"Evento de fim (círculo de borda grossa)","EVT"],[null,"Evento de temporizador","EVT"],[null,"Evento de mensagem","EVT"],[null,"Evento de sinal","EVT"],[null,"Evento de erro","EVT"],
+  [null,"Tarefa (retângulo de cantos arredondados)","ATV"],[null,"Subprocesso","ATV"],[null,"Atividade de chamada (call activity)","ATV"],[null,"Tarefa de usuário","ATV"],[null,"Tarefa de serviço","ATV"],[null,"Tarefa manual","ATV"],[null,"Tarefa de script","ATV"],
+  [null,"Gateway exclusivo (XOR)","GTW"],[null,"Gateway paralelo (AND)","GTW"],[null,"Gateway inclusivo (OR)","GTW"],[null,"Gateway baseado em eventos","GTW"],[null,"Gateway complexo","GTW"],
+  [null,"Fluxo de sequência (linha contínua)","CON"],[null,"Fluxo de mensagem (linha tracejada)","CON"],[null,"Associação (linha pontilhada)","CON"],
+  [null,"Piscina (pool)","RAI"],[null,"Raia (lane)","RAI"],
+  [null,"Objeto de dados","DAD"],[null,"Armazenamento de dados (data store)","DAD"],[null,"Entrada de dados","DAD"],[null,"Saída de dados","DAD"],
+  [null,"Grupo","ART"],[null,"Anotação de texto","ART"]]
+},
+{
+  id:"scrum", nome:"Scrum (Guia 2020)", ver:"Pilares, valores, papéis, eventos e artefatos", antes:"novo",
+  desc:"Classifique cada elemento do framework Scrum.",
+  grupos:[["PIL","Pilares do empirismo"],["VAL","Valores"],["RES","Responsabilidades (papéis)"],["EVT","Eventos"],["ART","Artefatos"],["CMP","Compromissos dos artefatos"]],
+  itens:[
+  [null,"Transparência","PIL"],[null,"Inspeção","PIL"],[null,"Adaptação","PIL"],
+  [null,"Compromisso","VAL"],[null,"Foco","VAL"],[null,"Abertura","VAL"],[null,"Respeito","VAL"],[null,"Coragem","VAL"],
+  [null,"Product Owner","RES"],[null,"Scrum Master","RES"],[null,"Developers","RES"],
+  [null,"Sprint","EVT"],[null,"Sprint Planning","EVT"],[null,"Daily Scrum","EVT"],[null,"Sprint Review","EVT"],[null,"Sprint Retrospective","EVT"],
+  [null,"Product Backlog","ART"],[null,"Sprint Backlog","ART"],[null,"Incremento","ART"],
+  [null,"Meta do Produto","CMP"],[null,"Meta da Sprint","CMP"],[null,"Definição de Pronto","CMP"]]
+},
+{
+  id:"xp", nome:"XP (Extreme Programming)", ver:"Valores, práticas e papéis", antes:"novo",
+  desc:"Diga se cada item é um valor, uma prática ou um papel do XP.",
+  grupos:[["VAL","Valores"],["PRA","Práticas"],["PAP","Papéis"]],
+  itens:[
+  [null,"Comunicação","VAL"],[null,"Simplicidade","VAL"],[null,"Feedback","VAL"],[null,"Coragem","VAL"],[null,"Respeito","VAL"],
+  [null,"Jogo do planejamento","PRA"],[null,"Pequenas liberações (releases)","PRA"],[null,"Metáfora","PRA"],[null,"Projeto simples","PRA"],[null,"Testes antes do código (TDD)","PRA"],[null,"Refatoração","PRA"],[null,"Programação em pares","PRA"],[null,"Propriedade coletiva do código","PRA"],[null,"Integração contínua","PRA"],[null,"Ritmo sustentável (semana de 40 horas)","PRA"],[null,"Cliente presente (on-site)","PRA"],[null,"Padrões de codificação","PRA"],
+  [null,"Programador","PAP"],[null,"Cliente","PAP"],[null,"Testador","PAP"],[null,"Rastreador (tracker)","PAP"],[null,"Treinador (coach)","PAP"]]
+},
+{
+  id:"testes", nome:"Tipos de testes", ver:"Níveis, tipos e técnicas", antes:"novo",
+  desc:"Classifique cada teste ou técnica: nível, não funcional, caixa-preta, caixa-branca ou ligado a mudanças.",
+  grupos:[["NIV","Níveis de teste"],["NFU","Testes não funcionais"],["CPR","Técnicas caixa-preta"],["CBR","Técnicas caixa-branca"],["MUD","Testes relacionados a mudanças"]],
+  itens:[
+  [null,"Teste de unidade (componente)","NIV"],[null,"Teste de integração","NIV"],[null,"Teste de sistema","NIV"],[null,"Teste de aceitação","NIV"],[null,"Teste alfa (aceitação no ambiente do fornecedor)","NIV"],[null,"Teste beta (aceitação no ambiente do usuário)","NIV"],
+  [null,"Teste de carga","NFU"],[null,"Teste de estresse","NFU"],[null,"Teste de desempenho","NFU"],[null,"Teste de usabilidade","NFU"],[null,"Teste de penetração (pentest)","NFU"],[null,"Teste de compatibilidade","NFU"],
+  [null,"Particionamento de equivalência","CPR"],[null,"Análise de valor limite","CPR"],[null,"Tabela de decisão","CPR"],[null,"Transição de estados","CPR"],[null,"Grafo de causa e efeito","CPR"],
+  [null,"Cobertura de instruções (comandos)","CBR"],[null,"Cobertura de decisão (ramos)","CBR"],[null,"Cobertura de condição","CBR"],[null,"Caminho básico (complexidade ciclomática de McCabe)","CBR"],[null,"Teste de fluxo de dados","CBR"],
+  [null,"Teste de regressão","MUD"],[null,"Teste de confirmação (reteste)","MUD"]]
+},
+{
+  id:"devops", nome:"DevOps", ver:"Ferramentas e práticas por categoria", antes:"novo",
+  desc:"Associe cada ferramenta ou prática à sua categoria na esteira DevOps.",
+  grupos:[["VCS","Controle de versão"],["CI","Integração contínua e build"],["QUA","Testes e qualidade de código"],["CTR","Contêineres e orquestração"],["IAC","Infraestrutura como código e configuração"],["CD","Entrega contínua e estratégias de deploy"],["OBS","Monitoramento e observabilidade"]],
+  itens:[
+  [null,"Git","VCS"],[null,"Subversion (SVN)","VCS"],[null,"Pull request com revisão de código","VCS"],[null,"Trunk-based development","VCS"],
+  [null,"Jenkins","CI"],[null,"GitHub Actions","CI"],[null,"Maven","CI"],[null,"Gradle","CI"],
+  [null,"Selenium","QUA"],[null,"JUnit","QUA"],[null,"SonarQube","QUA"],
+  [null,"Docker","CTR"],[null,"Kubernetes","CTR"],[null,"Podman","CTR"],[null,"Red Hat OpenShift","CTR"],
+  [null,"Terraform","IAC"],[null,"Ansible","IAC"],[null,"Puppet","IAC"],[null,"Chef","IAC"],[null,"AWS CloudFormation","IAC"],
+  [null,"Argo CD","CD"],[null,"Spinnaker","CD"],[null,"Implantação blue-green","CD"],[null,"Implantação canário (canary)","CD"],[null,"Feature flags (chaves de funcionalidade)","CD"],
+  [null,"Prometheus","OBS"],[null,"Grafana","OBS"],[null,"Zabbix","OBS"],[null,"Nagios","OBS"],[null,"ELK (Elasticsearch, Logstash, Kibana)","OBS"],[null,"Jaeger (rastreamento distribuído)","OBS"]]
+}
+];
+
+/* Seções do menu */
+const SECOES = [
+  ["Governança e serviços",["cobit2019","itil4","iso38500"]],
+  ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
+  ["Projetos e métodos ágeis",["pmbok8","pmbok7","scrum","xp"]],
+  ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
+  ["Dados, IA e redes",["sql","nosql","ia-ml","osi"]]
+];
+
+/* ---------- Armazenamento local (protegido) ---------- */
+const guarda = {
+  ler(k,padrao){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):padrao }catch{ return padrao } },
+  gravar(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch{} }
+};
+const chaveResultado = id => "classifica:res:"+id;
+const chaveErros = id => "classifica:erros:"+id;
+
+/* ---------- Utilidades ---------- */
+const app = document.getElementById("app");
+const $ = id => document.getElementById(id);
+const el = (tag, attrs={}, ...filhos) => {
+  const e=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs)){
+    if(k==="class") e.className=v; else if(k.startsWith("on")) e.addEventListener(k.slice(2),v);
+    else if(v!==false && v!=null) e.setAttribute(k,v===true?"":v);
+  }
+  for(const f of filhos.flat()) if(f!=null) e.append(f.nodeType?f:document.createTextNode(f));
+  return e;
+};
+const embaralhar = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a };
+const fmtTempo = s => Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const fmtData = iso => { const d=new Date(iso); return isNaN(d)?"":d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}) };
+const rotulo = it => it[0] ? it[0]+" · "+it[1] : it[1];
+const telaLarga = () => matchMedia("(min-width:900px)").matches;
+
+/* ---------- Menu ---------- */
+function ficha(j){
+  const r=guarda.ler(chaveResultado(j.id),null);
+  return el("a",{class:"ficha",href:"#"+j.id},
+    el("div",{class:"linha1"},el("h2",{},j.nome),el("span",{class:"ver"},j.itens.length+" itens")),
+    el("span",{class:"era"}, j.antes==="novo"?"Novo conjunto":j.antes==="mantido"?"Conteúdo atemporal":"Substitui: "+j.antes),
+    el("p",{},j.desc),
+    el("div",{class:"rodape"},
+      el("span",{},j.ver),
+      r?el("span",{},"Último: ",el("b",{},`${Math.round(100*r.acertos/(r.acertos+r.erros||1))}%`)," em ",fmtData(r.data)):el("span",{},"Ainda não jogado")));
+}
+function telaMenu(){
+  pararRelogio();
+  document.title="Classifica TI";
+  app.replaceChildren(
+    el("header",{class:"topo"},
+      el("h1",{},"Classifica ",el("span",{},"TI")),
+      el("p",{},"Treino para concursos: aparece um item por vez e você toca no grupo a que ele pertence. Se errar, o item volta para o fim da fila.")),
+    ...SECOES.map(([titulo,ids])=>el("section",{class:"secao"},
+      el("h2",{class:"secao-tit"},titulo),
+      el("div",{class:"grade"}, ids.map(id=>JOGOS.find(j=>j.id===id)).filter(Boolean).map(ficha)))),
+    el("p",{class:"nota"},"Os nomes dos processos, práticas e controles foram resumidos com palavras próprias. Confira sempre a versão cobrada no seu edital: se a banca pedir ITIL v3, PMBOK 5 ou ISO 27002:2013, a classificação é diferente. Em SQL e no modelo OSI algumas bancas divergem (por exemplo, SELECT como DML, ou TLS e ARP em camadas diferentes); aqui foi usada a classificação mais comum. Seu progresso fica salvo apenas neste navegador.")
+  );
+  scrollTo(0,0);
+}
+
+/* ---------- Jogo ---------- */
+let J=null, estado=null, relogio=null, espera=null;
+function pararRelogio(){ clearInterval(relogio); relogio=null; clearTimeout(espera); espera=null }
+
+function iniciar(jogo, ordem="aleatoria"){
+  pararRelogio();
+  const errosHist = guarda.ler(chaveErros(jogo.id),{});
+  const fila = embaralhar(jogo.itens.map((_,i)=>i));
+  if(ordem==="fracos") fila.sort((a,b)=>(errosHist[jogo.itens[b][1]]||0)-(errosHist[jogo.itens[a][1]]||0));
+  J=jogo;
+  estado={fila, acertos:0, erros:0, seg:0, comecou:false, errosPartida:new Map(), ordem, fim:false, ocupado:false};
+  document.title="Classifica TI · "+jogo.nome;
+  montarTela();
+}
+
+function textoNeutro(){ return J.colunas ? "Toque na célula certa da matriz" : "Onde este item se encaixa?" }
+
+function montarTela(){
+  const j=J;
+  const mostrar = guarda.ler("classifica:mostrar", telaLarga());
+  const alvos = el("div",{id:"alvos",class:mostrar?"":"oculta-lista"}, j.colunas ? montarMatriz(j) : montarGrupos(j));
+  app.replaceChildren(
+    el("div",{class:"barra"},
+      el("a",{class:"voltar",href:"#"},"← Jogos"),
+      el("div",{class:"titulo"},el("h1",{},j.nome),el("div",{class:"ver"},j.ver)),
+      el("div",{class:"acoes"},
+        el("label",{class:"sr",for:"ordem"},"Ordem dos itens"),
+        el("select",{class:"btn",id:"ordem",onchange:e=>iniciar(j,e.target.value)},
+          el("option",{value:"aleatoria",selected:estado.ordem==="aleatoria"},"Ordem aleatória"),
+          el("option",{value:"fracos",selected:estado.ordem==="fracos"},"Pontos fracos primeiro")),
+        el("button",{class:"btn",onclick:()=>iniciar(j,estado.ordem)},"Recomeçar"))),
+    el("div",{class:"placar"},
+      el("span",{},el("b",{id:"p-rest"}),"restantes"),
+      el("span",{class:"ok"},el("b",{id:"p-ok"}),"acertos"),
+      el("span",{class:"bad"},el("b",{id:"p-bad"}),"erros"),
+      el("span",{},el("b",{id:"tempo"},"0:00"),"tempo"),
+      el("label",{for:"mostrar"},
+        el("input",{type:"checkbox",id:"mostrar",checked:mostrar,onchange:e=>{
+          $("alvos").classList.toggle("oculta-lista",!e.target.checked); guarda.gravar("classifica:mostrar",e.target.checked)}}),
+        "Mostrar já classificados")),
+    el("div",{class:"progresso"},el("i",{id:"barra"})),
+    el("div",{id:"fim",class:"fim",hidden:true}),
+    el("div",{class:"carta",id:"carta"},
+      el("div",{class:"selo",id:"selo","aria-live":"polite"},textoNeutro()),
+      el("div",{class:"txt",id:"txt"})),
+    alvos,
+    montarGabarito(j)
+  );
+  mostrarCartaAtual();
+  atualizar();
+  scrollTo(0,0);
+}
+
+function montarGrupos(j){
+  return el("div",{class:"grupos"}, j.grupos.map(([sig,nome],i)=>
+    el("section",{class:"grupo","data-g":sig},
+      el("button",{onclick:()=>responder(sig),"aria-label":`${sig}: ${nome}`},
+        el("span",{class:"sig"},sig), el("span",{class:"nm"},nome),
+        el("span",{class:"cont","data-cont":sig}),
+        i<9?el("span",{class:"tecla"},String(i+1)):null),
+      el("ul",{"data-lista":sig}))));
+}
+
+function montarMatriz(j){
+  return el("div",{class:"matriz-wrap"},
+    el("table",{class:"matriz"},
+      el("thead",{},el("tr",{},el("th",{},el("span",{class:"longo"},"Área \\ Grupo"),el("span",{class:"curto"},"Área")),
+        j.colunas.map(([,n,curto])=>el("th",{scope:"col",title:n},el("span",{class:"longo"},n),el("span",{class:"curto"},curto))))),
+      el("tbody",{}, j.grupos.map(([g,ng])=>
+        el("tr",{},
+          el("th",{scope:"row"},el("span",{class:"mono"},g+" "),ng),
+          j.colunas.map(([c,nc])=>el("td",{"data-cel":g+"|"+c},
+            el("button",{onclick:()=>responder(g,c),"aria-label":`${ng}, ${nc}`}))))))));
+}
+
+function montarGabarito(j){
+  const blocos = j.colunas
+    ? j.grupos.map(([g,n])=>el("div",{},el("h3",{},g+". "+n),
+        el("ul",{}, j.itens.filter(it=>it[2]===g).map(it=>el("li",{},el("span",{class:"mono"},it[0]),it[1]," — ",j.colunas.find(c=>c[0]===it[3])[1])))))
+    : j.grupos.map(([g,n])=>el("div",{},el("h3",{},g+" · "+n),
+        el("ul",{}, j.itens.filter(it=>it[2]===g).map(it=>el("li",{},it[0]?el("span",{class:"mono"},it[0]):null,it[1])))));
+  return el("details",{class:"gab"},el("summary",{},"Ver gabarito completo"),el("div",{class:"gab-col"},blocos));
+}
+
+function mostrarCartaAtual(){
+  const it=J.itens[estado.fila[0]];
+  const carta=$("carta");
+  carta.classList.remove("ok","bad");
+  $("selo").textContent=textoNeutro();
+  $("txt").textContent = it ? it[1] : "";
+}
+
+function atualizar(){
+  const total=J.itens.length, feitos=total-estado.fila.length;
+  $("p-rest").textContent=estado.fila.length;
+  $("p-ok").textContent=estado.acertos;
+  $("p-bad").textContent=estado.erros;
+  $("barra").style.width=(100*feitos/total)+"%";
+  if(!J.colunas) for(const [g] of J.grupos){
+    const n=J.itens.filter(x=>x[2]===g).length, c=document.querySelector(`[data-lista="${g}"]`).children.length;
+    document.querySelector(`[data-cont="${g}"]`).textContent=`${c}/${n}`;
+  }
+}
+
+function piscar(alvo, classe){
+  if(!alvo) return;
+  alvo.classList.add(classe); setTimeout(()=>alvo.classList.remove(classe),700);
+}
+
+/* Responde: o resultado aparece no selo da própria carta (acima do nome) e só depois a próxima carta entra */
+function responder(g, c){
+  if(estado.fim || estado.ocupado || !estado.fila.length) return;
+  if(!estado.comecou){ estado.comecou=true; relogio=setInterval(()=>{estado.seg++; const t=$("tempo"); if(t) t.textContent=fmtTempo(estado.seg)},1000) }
+  const idx=estado.fila.shift(), it=J.itens[idx];
+  const certo = it[2]===g && (!J.colunas || it[3]===c);
+  const carta=$("carta"), selo=$("selo");
+  const alvo = J.colunas ? document.querySelector(`[data-cel="${g}|${c}"]`) : document.querySelector(`[data-g="${g}"]`);
+  carta.classList.remove("ok","bad"); void carta.offsetWidth;
+  if(certo){
+    estado.acertos++;
+    if(J.colunas) alvo.querySelector("button").append(el("span",{class:"chip",title:it[1]},it[0]));
+    else document.querySelector(`[data-lista="${g}"]`).append(el("li",{},it[0]?el("span",{class:"mono"},it[0]):null,el("span",{},it[1])));
+    carta.classList.add("ok");
+    selo.textContent = "✓ Certo" + (it[0] ? " · "+it[0] : "") + (J.colunas ? "" : " → "+g);
+    piscar(alvo,"flash-ok");
+  }else{
+    estado.erros++;
+    estado.fila.push(idx);
+    estado.errosPartida.set(idx,(estado.errosPartida.get(idx)||0)+1);
+    let dica = "✗ Não é "+g+" · volta para o fim da fila";
+    if(J.colunas){
+      if(it[2]===g) dica="✗ Área certa, grupo de processos errado";
+      else if(it[3]===c) dica="✗ Grupo de processos certo, área errada";
+      else dica="✗ Área e grupo de processos errados";
+    }
+    carta.classList.add("bad");
+    selo.textContent=dica;
+    piscar(alvo,"flash-bad");
+  }
+  atualizar();
+  estado.ocupado=true;
+  espera=setTimeout(()=>{
+    estado.ocupado=false;
+    if(!estado.fila.length) terminar(); else mostrarCartaAtual();
+  }, certo?650:1300);
+}
+
+function terminar(){
+  estado.fim=true; pararRelogio();
+  const {acertos,erros,seg}=estado, pct=Math.round(100*acertos/(acertos+erros));
+  guarda.gravar(chaveResultado(J.id),{data:new Date().toISOString(),acertos,erros,seg});
+  const hist=guarda.ler(chaveErros(J.id),{});
+  for(const [idx,n] of estado.errosPartida){ const nm=J.itens[idx][1]; hist[nm]=(hist[nm]||0)+n }
+  guarda.gravar(chaveErros(J.id),hist);
+  const nomeGrupo = it => { const g=J.grupos.find(x=>x[0]===it[2])[1]; return J.colunas ? g+" / "+J.colunas.find(x=>x[0]===it[3])[1] : g };
+  const errados=[...estado.errosPartida.keys()].map(i=>J.itens[i]);
+  const fim=$("fim");
+  fim.replaceChildren(
+    el("h2",{}, erros===0?"Partida perfeita!":`Concluído com ${pct}% de acerto`),
+    el("div",{},`${J.itens.length} itens em ${fmtTempo(seg)}, com ${acertos} acertos e ${erros} erros.`),
+    errados.length?el("div",{},el("b",{},"Para revisar:"),el("ul",{},errados.map(it=>el("li",{},rotulo(it)," → ",el("b",{},nomeGrupo(it)))))):null,
+    el("div",{class:"acoes"},
+      el("button",{class:"btn pri",onclick:()=>iniciar(J,"aleatoria")},"Jogar de novo"),
+      errados.length?el("button",{class:"btn",onclick:()=>iniciar(J,"fracos")},"Começar pelos pontos fracos"):null,
+      el("a",{class:"btn",href:"#"},"Escolher outro jogo")));
+  fim.hidden=false;
+  $("carta").hidden=true;
+  $("alvos").classList.remove("oculta-lista");
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---------- Teclado: 1–9 escolhem o grupo ---------- */
+addEventListener("keydown",e=>{
+  if(!J || J.colunas || !location.hash || e.target.closest("select,input")) return;
+  const n=parseInt(e.key,10);
+  if(n>=1 && n<=J.grupos.length) responder(J.grupos[n-1][0]);
+});
+
+/* ---------- Rotas por hash ---------- */
+function rota(){
+  const id=location.hash.slice(1);
+  const jogo=JOGOS.find(j=>j.id===id);
+  if(jogo) iniciar(jogo); else { J=null; telaMenu(); }
+}
+addEventListener("hashchange",rota);
+rota();
+</script>
