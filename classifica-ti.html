@@ -147,6 +147,27 @@ details.gab summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;
 .gab-col li{break-inside:avoid;margin-bottom:3px}
 .gab-col li .mono{color:var(--muted);margin-right:6px}
 
+/* ---------- Rodapé: criador e apoio via Pix ---------- */
+.rodape-site{border-top:1px solid var(--line);background:var(--surface);margin-top:8px}
+.rs-inner{max-width:1180px;margin:0 auto;padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:24px 40px;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);align-items:start}
+.rs-rot{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rs-autor strong{display:block;font-family:var(--f-display);font-size:1.35rem;font-weight:800;margin-top:2px}
+.rs-autor p{margin:6px 0 0;color:var(--muted);font-size:.9rem;max-width:42ch}
+.rs-pix{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.rs-qr{flex:none;width:176px;max-width:100%;background:#ffffff;border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.rs-qr svg{display:block;width:100%;height:auto}
+.rs-pix-txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.rs-pix-txt h2{font-size:1.2rem;font-weight:800}
+.rs-pix-txt p{margin:0;font-size:.92rem;max-width:60ch}
+.rs-chave{display:flex;flex-direction:column;gap:2px}
+.rs-chave span{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rs-chave code{font-family:var(--f-mono);font-size:1rem;overflow-wrap:anywhere;user-select:all}
+.rs-botoes{display:flex;gap:8px;flex-wrap:wrap}
+.rs-aviso{color:var(--muted);font-size:.82rem!important}
+.rs-aviso.ok{color:var(--ok)}
+@media (max-width:760px){ .rs-inner{grid-template-columns:1fr} .rs-pix{flex-direction:column;align-items:stretch} .rs-qr{align-self:center;width:200px} .rs-botoes>*{flex:1 1 180px} }
 /* Computador com teclado: mostra os atalhos 1–9 */
 @media (hover:hover) and (pointer:fine){ .grupo .tecla{display:inline;font-family:var(--f-mono);font-size:.7rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;grid-column:3;grid-row:2;justify-self:end} }
 /* Celular */
@@ -172,6 +193,62 @@ details.gab summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;
 </head>
 <body>
 <div class="wrap" id="app" lang="pt-BR"></div>
+
+<footer class="rodape-site">
+  <div class="rs-inner">
+    <div class="rs-autor">
+      <span class="rs-rot">Criador do projeto</span>
+      <strong>Dougllas Diniz</strong>
+      <p>Criei o Classifica TI para ajudar quem estuda para concursos de TI. O uso é livre e gratuito.</p>
+    </div>
+    <div class="rs-pix">
+      <div class="rs-qr" id="pix-qr" role="img" aria-label="QR Code para fazer um Pix ao criador do projeto"></div>
+      <div class="rs-pix-txt">
+        <h2>Gostou? Apoie com um Pix</h2>
+        <p>Se os jogos estão ajudando nos seus estudos, faça um Pix de qualquer valor. O valor de um café já ajuda a manter o conteúdo atualizado com as novas versões das normas e a criar novos jogos. Obrigado pelo apoio!</p>
+        <div class="rs-chave"><span>Chave Pix (e-mail)</span><code id="pix-chave">dmd.dougllas@gmail.com</code></div>
+        <div class="rs-botoes">
+          <button class="btn pri" id="copiar-pix" type="button">Copiar Pix copia e cola</button>
+          <button class="btn" id="copiar-chave" type="button">Copiar chave</button>
+        </div>
+        <p class="rs-aviso" id="pix-aviso" aria-live="polite">Abra o app do seu banco e leia o QR Code, ou copie o código e use a opção Pix copia e cola.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* ---------- Pix: QR Code e botões de copiar ---------- */
+(function(){
+  const PIX = "00020126440014br.gov.bcb.pix0122dmd.dougllas@gmail.com5204000053039865802BR5914DOUGLLAS DINIZ6006BRASIL62070503***6304DF49";
+  const CHAVE = "dmd.dougllas@gmail.com";
+  const caixa = document.getElementById("pix-qr");
+  try {
+    const q = qrcode(0, "M"); q.addData(PIX); q.make();
+    const n = q.getModuleCount(); let d = "";
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+    caixa.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><rect width="${n}" height="${n}" fill="#ffffff"/><path d="${d}" fill="#000000"/></svg>`;
+  } catch (e) { caixa.hidden = true; }
+  const aviso = document.getElementById("pix-aviso");
+  function copiar(texto, msg, alvoSelecao) {
+    const ok = () => { aviso.textContent = msg; aviso.classList.add("ok"); };
+    const falha = () => {
+      const sel = getSelection(), r = document.createRange();
+      r.selectNodeContents(alvoSelecao); sel.removeAllRanges(); sel.addRange(r);
+      aviso.textContent = "Não deu para copiar automaticamente. O texto está selecionado: copie manualmente.";
+      aviso.classList.remove("ok");
+    };
+    try { navigator.clipboard.writeText(texto).then(ok, falha); } catch (e) { falha(); }
+  }
+  const chaveEl = document.getElementById("pix-chave");
+  document.getElementById("copiar-chave").addEventListener("click", () => copiar(CHAVE, "Chave Pix copiada. Cole no app do seu banco.", chaveEl));
+  document.getElementById("copiar-pix").addEventListener("click", () => {
+    const tmp = document.createElement("span"); tmp.textContent = PIX; tmp.className = "sr"; document.body.append(tmp);
+    copiar(PIX, "Código Pix copia e cola copiado. Cole no app do seu banco.", tmp);
+    setTimeout(() => tmp.remove(), 4000);
+  });
+})();
+</script>
 
 <script>
 /* =====================================================================
