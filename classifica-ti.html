@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps e mais.">
+<meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps, computação em nuvem e mais.">
 <title>Classifica TI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -539,6 +539,31 @@ const JOGOS = [
   ["RSC.4", "Planejar as respostas aos riscos", "RSC", "P"],
   ["RSC.5", "Implementar as respostas aos riscos", "RSC", "E"],
   ["RSC.6", "Monitorar os riscos", "RSC", "M"]]
+},
+{
+  id:"nuvem-nist", nome:"Computação em nuvem (NIST)", ver:"Características, modelos de serviço e de implantação", antes:"novo",
+  desc:"Diga se cada item é uma característica essencial, um modelo de serviço ou um modelo de implantação, segundo o NIST SP 800-145.",
+  grupos:[["CAR","Características essenciais (5)"],["SRV","Modelos de serviço (3)"],["IMP","Modelos de implantação (4)"]],
+  itens:[
+  [null,"Autoatendimento sob demanda","CAR"],[null,"Amplo acesso à rede","CAR"],[null,"Agrupamento de recursos (resource pooling)","CAR"],[null,"Elasticidade rápida","CAR"],[null,"Serviço mensurado","CAR"],
+  [null,"O cliente provisiona recursos sozinho, sem interação humana com o provedor","CAR"],[null,"Recursos atendem vários clientes (multilocação), sem que saibam a localização exata","CAR"],[null,"A capacidade cresce e diminui conforme a demanda, parecendo ilimitada","CAR"],[null,"O uso é medido e cobrado, com transparência para cliente e provedor","CAR"],
+  [null,"Infraestrutura como Serviço (IaaS)","SRV"],[null,"Plataforma como Serviço (PaaS)","SRV"],[null,"Software como Serviço (SaaS)","SRV"],
+  [null,"Nuvem privada","IMP"],[null,"Nuvem comunitária","IMP"],[null,"Nuvem pública","IMP"],[null,"Nuvem híbrida","IMP"],
+  [null,"Infraestrutura de uso exclusivo de uma única organização","IMP"],[null,"Infraestrutura compartilhada por organizações com interesses comuns","IMP"],[null,"Combinação de duas ou mais nuvens distintas, ligadas por tecnologia que permite portabilidade","IMP"]]
+},
+{
+  id:"nuvem-servicos", nome:"Nuvem: IaaS, PaaS, SaaS e FaaS", ver:"Exemplos e responsabilidades", antes:"novo",
+  desc:"Encaixe cada serviço ou responsabilidade no modelo de serviço em nuvem certo.",
+  grupos:[["IAAS","IaaS: infraestrutura"],["PAAS","PaaS: plataforma"],["SAAS","SaaS: software pronto"],["FAAS","FaaS / serverless (além dos 3 do NIST)"]],
+  itens:[
+  [null,"Amazon EC2","IAAS"],[null,"Azure Virtual Machines","IAAS"],[null,"Google Compute Engine","IAAS"],[null,"Amazon EBS (discos virtuais)","IAAS"],
+  [null,"O cliente gerencia sistema operacional, middleware e aplicações; o provedor cuida do hardware e da virtualização","IAAS"],
+  [null,"Heroku","PAAS"],[null,"Google App Engine","PAAS"],[null,"AWS Elastic Beanstalk","PAAS"],[null,"Azure App Service","PAAS"],
+  [null,"O cliente implanta e gerencia só suas aplicações e dados; o provedor cuida do sistema operacional e do ambiente de execução","PAAS"],
+  [null,"Microsoft 365","SAAS"],[null,"Google Workspace","SAAS"],[null,"Salesforce","SAAS"],[null,"Zoom","SAAS"],
+  [null,"O cliente apenas usa a aplicação e ajusta configurações limitadas; o provedor gerencia todo o resto","SAAS"],
+  [null,"AWS Lambda","FAAS"],[null,"Azure Functions","FAAS"],[null,"Google Cloud Functions","FAAS"],
+  [null,"Funções executadas sob demanda, disparadas por eventos e cobradas por execução","FAAS"]]
 }
 ];
 
@@ -548,7 +573,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA e redes",["sql","nosql","ia-ml","osi"]]
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","osi","nuvem-nist","nuvem-servicos"]]
 ];
 
 /* ---------- Armazenamento local (protegido) ---------- */
