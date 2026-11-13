@@ -449,6 +449,19 @@ const JOGOS = [
   [null,"Engenharia de prompt","LLM"],[null,"Geração aumentada por recuperação (RAG)","LLM"],[null,"Alucinação","LLM"],[null,"Janela de contexto","LLM"],[null,"Aprendizado por reforço com feedback humano (RLHF)","LLM"],[null,"Temperatura (aleatoriedade da resposta)","LLM"],[null,"Aprendizado zero-shot e few-shot","LLM"],[null,"Cadeia de pensamento (chain-of-thought)","LLM"]]
 },
 {
+  id:"visao-comp", nome:"Visão computacional", ver:"45 itens · 7 categorias", antes:"novo",
+  desc:"Diga se cada técnica, modelo ou métrica é de processamento de imagem, extração de características, classificação, detecção, segmentação, outra tarefa ou avaliação.",
+  grupos:[["PRE","Processamento de imagem"],["CAR","Extração de características clássica"],["CLA","Classificação de imagens"],["DET","Detecção de objetos"],["SEG","Segmentação de imagens"],["OUT","Outras tarefas de visão"],["AVA","Métricas de avaliação"]],
+  itens:[
+  [null,"Conversão para tons de cinza e outros espaços de cor (HSV)","PRE"],[null,"Filtro gaussiano (suavização)","PRE"],[null,"Filtro de mediana (ruído sal e pimenta)","PRE"],[null,"Equalização de histograma (contraste)","PRE"],[null,"Limiarização e binarização (método de Otsu)","PRE"],[null,"Erosão e dilatação (morfologia matemática)","PRE"],[null,"Detecção de bordas (Sobel, Canny)","PRE"],
+  [null,"SIFT","CAR"],[null,"SURF","CAR"],[null,"ORB","CAR"],[null,"HOG (histograma de gradientes orientados)","CAR"],[null,"Detector de cantos de Harris","CAR"],[null,"Transformada de Hough (retas e círculos)","CAR"],[null,"Características Haar (Viola-Jones)","CAR"],
+  [null,"ResNet (conexões residuais)","CLA"],[null,"VGG","CLA"],[null,"AlexNet","CLA"],[null,"EfficientNet","CLA"],[null,"Vision Transformer (ViT)","CLA"],[null,"Atribui um único rótulo à imagem inteira","CLA"],
+  [null,"YOLO","DET"],[null,"Faster R-CNN","DET"],[null,"SSD (Single Shot Detector)","DET"],[null,"RetinaNet","DET"],[null,"DETR","DET"],[null,"Localiza objetos com caixas delimitadoras (bounding boxes) e classes","DET"],[null,"Supressão de não máximos (NMS)","DET"],
+  [null,"U-Net","SEG"],[null,"Mask R-CNN","SEG"],[null,"DeepLab","SEG"],[null,"Rede totalmente convolucional (FCN)","SEG"],[null,"Segment Anything (SAM)","SEG"],[null,"Atribui uma classe a cada pixel da imagem","SEG"],[null,"Separa cada objeto da mesma classe com sua própria máscara","SEG"],
+  [null,"Reconhecimento óptico de caracteres (OCR, Tesseract)","OUT"],[null,"Estimativa de pose humana (OpenPose)","OUT"],[null,"Rastreamento de objetos em vídeo (SORT, DeepSORT)","OUT"],[null,"Fluxo óptico (Lucas-Kanade)","OUT"],[null,"Reconhecimento facial (FaceNet)","OUT"],[null,"Estimativa de profundidade a partir de uma só imagem","OUT"],
+  [null,"Interseção sobre união (IoU)","AVA"],[null,"Precisão média (mAP)","AVA"],[null,"Coeficiente Dice","AVA"],[null,"Acurácia top-5","AVA"],[null,"PSNR e SSIM (qualidade de imagem)","AVA"]]
+},
+{
   id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
   desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
   grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
@@ -686,7 +699,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","pln","osi","nuvem-nist","nuvem-servicos"]],
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","pln","visao-comp","osi","nuvem-nist","nuvem-servicos"]],
   ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
