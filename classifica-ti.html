@@ -437,6 +437,18 @@ const JOGOS = [
   [null,"Desaparecimento do gradiente (vanishing gradient)","PRB"],[null,"Explosão do gradiente (exploding gradient)","PRB"],[null,"Sobreajuste (overfitting)","PRB"],[null,"Subajuste (underfitting)","PRB"],[null,"Neurônios mortos (dying ReLU)","PRB"],[null,"Mínimos locais e pontos de sela","PRB"],[null,"Esquecimento catastrófico","PRB"],[null,"Vai bem no treino e mal nos dados de validação","PRB"]]
 },
 {
+  id:"pln", nome:"Processamento de linguagem natural", ver:"44 itens · 6 categorias", antes:"novo",
+  desc:"Diga se cada item de PLN é pré-processamento, representação de texto, tarefa, modelo, métrica de avaliação ou conceito de LLMs.",
+  grupos:[["PRE","Pré-processamento de texto"],["REP","Representação de texto"],["TAR","Tarefas de PLN"],["MOD","Modelos e arquiteturas"],["AVA","Métricas de avaliação"],["LLM","LLMs e IA generativa"]],
+  itens:[
+  [null,"Tokenização","PRE"],[null,"Remoção de stopwords","PRE"],[null,"Stemming (\u201ccorrendo\u201d → \u201ccorr\u201d)","PRE"],[null,"Lematização (\u201ccorrendo\u201d → \u201ccorrer\u201d)","PRE"],[null,"Normalização (minúsculas, sem acentos e pontuação)","PRE"],[null,"Segmentação de sentenças","PRE"],[null,"Tokenização em subpalavras (BPE, WordPiece)","PRE"],
+  [null,"Saco de palavras (bag of words)","REP"],[null,"TF-IDF","REP"],[null,"N-gramas","REP"],[null,"Codificação one-hot","REP"],[null,"Word2Vec (CBOW e Skip-gram)","REP"],[null,"GloVe","REP"],[null,"FastText","REP"],[null,"Palavras de sentido parecido ficam próximas no espaço vetorial","REP"],
+  [null,"Análise de sentimento","TAR"],[null,"Reconhecimento de entidades nomeadas (NER)","TAR"],[null,"Etiquetagem morfossintática (POS tagging)","TAR"],[null,"Tradução automática","TAR"],[null,"Sumarização automática","TAR"],[null,"Resposta a perguntas (question answering)","TAR"],[null,"Modelagem de tópicos (LDA)","TAR"],[null,"Resolução de correferência (\u201cela\u201d se refere a \u201cMaria\u201d)","TAR"],
+  [null,"Seq2seq com LSTM (codificador e decodificador recorrentes)","MOD"],[null,"Mecanismo de atenção","MOD"],[null,"Transformer","MOD"],[null,"BERT (só codificador, bidirecional)","MOD"],[null,"GPT (só decodificador, autorregressivo)","MOD"],[null,"T5 (codificador-decodificador)","MOD"],[null,"Pré-treino prevendo palavras mascaradas","MOD"],
+  [null,"BLEU (tradução)","AVA"],[null,"ROUGE (sumarização)","AVA"],[null,"Perplexidade","AVA"],[null,"Precisão, revocação e F1","AVA"],[null,"METEOR","AVA"],[null,"Correspondência exata (exact match)","AVA"],
+  [null,"Engenharia de prompt","LLM"],[null,"Geração aumentada por recuperação (RAG)","LLM"],[null,"Alucinação","LLM"],[null,"Janela de contexto","LLM"],[null,"Aprendizado por reforço com feedback humano (RLHF)","LLM"],[null,"Temperatura (aleatoriedade da resposta)","LLM"],[null,"Aprendizado zero-shot e few-shot","LLM"],[null,"Cadeia de pensamento (chain-of-thought)","LLM"]]
+},
+{
   id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
   desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
   grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
@@ -674,7 +686,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","osi","nuvem-nist","nuvem-servicos"]],
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","pln","osi","nuvem-nist","nuvem-servicos"]],
   ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
