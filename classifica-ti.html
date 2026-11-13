@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps, computação em nuvem e mais.">
+<meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps, computação em nuvem, Docker, Kubernetes e mais.">
 <title>Classifica TI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -564,6 +564,40 @@ const JOGOS = [
   [null,"O cliente apenas usa a aplicação e ajusta configurações limitadas; o provedor gerencia todo o resto","SAAS"],
   [null,"AWS Lambda","FAAS"],[null,"Azure Functions","FAAS"],[null,"Google Cloud Functions","FAAS"],
   [null,"Funções executadas sob demanda, disparadas por eventos e cobradas por execução","FAAS"]]
+},
+{
+  id:"conteineres", nome:"Contêineres × máquinas virtuais", ver:"Conceitos de conteinerização e virtualização", antes:"novo",
+  desc:"Diga se cada item descreve contêineres, máquinas virtuais ou um recurso do kernel Linux que torna os contêineres possíveis.",
+  grupos:[["CTR","Contêineres"],["VM","Máquinas virtuais"],["KRN","Recursos do kernel Linux usados por contêineres"]],
+  itens:[
+  [null,"Compartilham o kernel do sistema operacional hospedeiro","CTR"],[null,"Isolamento no nível do sistema operacional","CTR"],[null,"Iniciam em segundos ou menos","CTR"],[null,"Imagens costumam ter poucos megabytes","CTR"],
+  [null,"Empacotam a aplicação com bibliotecas e dependências, sem um sistema operacional completo","CTR"],[null,"Uma falha de segurança no kernel do hospedeiro pode afetar todas as instâncias","CTR"],[null,"Docker, Podman, containerd, CRI-O","CTR"],
+  [null,"Cada instância executa um sistema operacional convidado completo","VM"],[null,"Dependem de um hipervisor","VM"],[null,"Isolamento no nível do hardware virtualizado","VM"],[null,"Imagens costumam ter vários gigabytes","VM"],
+  [null,"Podem rodar um sistema operacional diferente do hospedeiro (ex.: Windows sobre Linux)","VM"],[null,"Hipervisor tipo 1 (bare metal) ou tipo 2 (hospedado)","VM"],[null,"VMware ESXi, Microsoft Hyper-V, KVM, VirtualBox","VM"],
+  [null,"Namespaces: isolam o que o processo enxerga (PIDs, rede, montagens, usuários)","KRN"],[null,"cgroups: limitam e contabilizam CPU, memória e E/S","KRN"],[null,"Sistema de arquivos em camadas (OverlayFS)","KRN"],[null,"seccomp: restringe as chamadas de sistema permitidas","KRN"],[null,"Capabilities: dividem os privilégios do root em partes menores","KRN"]]
+},
+{
+  id:"docker", nome:"Docker", ver:"Comandos, Dockerfile, registries, dados e redes", antes:"novo",
+  desc:"Encaixe cada comando, instrução ou conceito do Docker na etapa a que pertence.",
+  grupos:[["BLD","Construção da imagem (build)"],["EXE","Execução e ciclo de vida do contêiner"],["DST","Distribuição de imagens (registries)"],["DAD","Dados e redes"]],
+  itens:[
+  [null,"docker build","BLD"],[null,"Dockerfile","BLD"],[null,"FROM (imagem base)","BLD"],[null,"RUN (executa comandos ao gerar a imagem)","BLD"],[null,"COPY / ADD","BLD"],[null,"Build multiestágio (multi-stage)","BLD"],[null,".dockerignore","BLD"],[null,"Camadas (layers) somente leitura da imagem","BLD"],
+  [null,"docker run","EXE"],[null,"docker exec","EXE"],[null,"docker ps","EXE"],[null,"docker logs","EXE"],[null,"docker stop / docker start","EXE"],[null,"Camada gravável do contêiner, descartada ao removê-lo","EXE"],[null,"Política de reinício (--restart unless-stopped)","EXE"],
+  [null,"docker push","DST"],[null,"docker pull","DST"],[null,"docker tag","DST"],[null,"docker login","DST"],[null,"Docker Hub","DST"],[null,"Registry privado (Harbor, Amazon ECR, Azure ACR)","DST"],
+  [null,"Volume nomeado (docker volume create)","DAD"],[null,"Bind mount (pasta do hospedeiro montada no contêiner)","DAD"],[null,"Montagem tmpfs (em memória)","DAD"],[null,"Rede bridge (padrão)","DAD"],[null,"Rede host","DAD"],[null,"Rede overlay (vários hosts)","DAD"],[null,"Publicar porta (-p 8080:80)","DAD"]]
+},
+{
+  id:"kubernetes", nome:"Kubernetes", ver:"Componentes do cluster e objetos", antes:"novo",
+  desc:"Classifique cada componente ou objeto do Kubernetes na sua categoria.",
+  grupos:[["CP","Plano de controle (control plane)"],["NO","Componentes do nó (worker)"],["WL","Cargas de trabalho (workloads)"],["RED","Rede e exposição de serviços"],["CFG","Configuração e armazenamento"]],
+  itens:[
+  [null,"kube-apiserver","CP"],[null,"etcd","CP"],[null,"kube-scheduler","CP"],[null,"kube-controller-manager","CP"],[null,"cloud-controller-manager","CP"],
+  [null,"Armazena todo o estado do cluster em formato chave-valor","CP"],[null,"Escolhe em qual nó cada Pod novo vai rodar","CP"],
+  [null,"kubelet","NO"],[null,"kube-proxy","NO"],[null,"Runtime de contêiner (containerd, CRI-O)","NO"],[null,"Garante que os contêineres descritos nos Pods estejam rodando no nó","NO"],
+  [null,"Pod","WL"],[null,"ReplicaSet","WL"],[null,"Deployment","WL"],[null,"StatefulSet","WL"],[null,"DaemonSet","WL"],[null,"Job","WL"],[null,"CronJob","WL"],
+  [null,"Menor unidade implantável, com um ou mais contêineres","WL"],[null,"Executa uma cópia do Pod em cada nó (ex.: coletor de logs)","WL"],
+  [null,"Service ClusterIP","RED"],[null,"Service NodePort","RED"],[null,"Service LoadBalancer","RED"],[null,"Ingress","RED"],[null,"NetworkPolicy","RED"],
+  [null,"ConfigMap","CFG"],[null,"Secret","CFG"],[null,"PersistentVolume (PV)","CFG"],[null,"PersistentVolumeClaim (PVC)","CFG"],[null,"StorageClass","CFG"]]
 }
 ];
 
@@ -573,7 +607,8 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","osi","nuvem-nist","nuvem-servicos"]]
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","osi","nuvem-nist","nuvem-servicos"]],
+  ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
 /* ---------- Armazenamento local (protegido) ---------- */
