@@ -462,6 +462,19 @@ const JOGOS = [
   [null,"Interseção sobre união (IoU)","AVA"],[null,"Precisão média (mAP)","AVA"],[null,"Coeficiente Dice","AVA"],[null,"Acurácia top-5","AVA"],[null,"PSNR e SSIM (qualidade de imagem)","AVA"]]
 },
 {
+  id:"ciencia-dados", nome:"Ciência de dados", ver:"46 itens · 7 categorias", antes:"novo",
+  desc:"Diga se cada item é fase do CRISP-DM, etapa do KDD, medida estatística, técnica de preparação, métrica de modelo, tipo de gráfico ou um dos 5 Vs do big data.",
+  grupos:[["CRI","Fases do CRISP-DM"],["KDD","Etapas do KDD"],["EST","Estatística descritiva"],["PRE","Preparação de dados"],["MET","Métricas e validação de modelos"],["VIS","Visualização de dados"],["BIG","5 Vs do big data"]],
+  itens:[
+  [null,"Entendimento do negócio","CRI"],[null,"Entendimento dos dados","CRI"],[null,"Preparação dos dados","CRI"],[null,"Modelagem","CRI"],[null,"Avaliação do modelo frente aos objetivos de negócio","CRI"],[null,"Implantação (deployment)","CRI"],
+  [null,"Seleção dos dados","KDD"],[null,"Pré-processamento (limpeza)","KDD"],[null,"Transformação","KDD"],[null,"Mineração de dados","KDD"],[null,"Interpretação e avaliação dos padrões","KDD"],
+  [null,"Média","EST"],[null,"Mediana","EST"],[null,"Moda","EST"],[null,"Variância","EST"],[null,"Desvio padrão","EST"],[null,"Quartis e amplitude interquartil (IQR)","EST"],[null,"Assimetria e curtose","EST"],[null,"Coeficiente de correlação de Pearson","EST"],
+  [null,"Imputação de valores ausentes","PRE"],[null,"Normalização min-max (escala de 0 a 1)","PRE"],[null,"Padronização z-score (média 0, desvio 1)","PRE"],[null,"Codificação one-hot de variáveis categóricas","PRE"],[null,"Balanceamento de classes (SMOTE)","PRE"],[null,"Remoção de registros duplicados","PRE"],[null,"Engenharia de atributos (feature engineering)","PRE"],
+  [null,"Matriz de confusão","MET"],[null,"Acurácia","MET"],[null,"Precisão","MET"],[null,"Revocação (recall, sensibilidade)","MET"],[null,"F1-score","MET"],[null,"Curva ROC e AUC","MET"],[null,"RMSE e MAE","MET"],[null,"Coeficiente de determinação (R²)","MET"],[null,"Validação cruzada k-fold","MET"],
+  [null,"Histograma (distribuição de uma variável)","VIS"],[null,"Boxplot (quartis e outliers)","VIS"],[null,"Gráfico de dispersão (relação entre duas variáveis numéricas)","VIS"],[null,"Mapa de calor (matriz de correlação)","VIS"],[null,"Gráfico de linhas (evolução no tempo)","VIS"],[null,"Gráfico de barras (comparar categorias)","VIS"],
+  [null,"Volume","BIG"],[null,"Velocidade","BIG"],[null,"Variedade","BIG"],[null,"Veracidade","BIG"],[null,"Valor","BIG"]]
+},
+{
   id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
   desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
   grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
@@ -699,7 +712,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","pln","visao-comp","osi","nuvem-nist","nuvem-servicos"]],
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","pln","visao-comp","ciencia-dados","osi","nuvem-nist","nuvem-servicos"]],
   ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
