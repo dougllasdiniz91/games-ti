@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memória TI</title>
+<meta name="description" content="Memória TI: jogo da memória gratuito com conceitos de redes, programação, segurança, hardware, cloud e banco de dados.">
+<style>
+:root{
+  --bg:#f4f6fb; --surface:#ffffff; --text:#1b2333; --muted:#5d6779;
+  --accent:#2f6fed; --accent-2:#13a27a; --danger:#d9434f;
+  --card-back:#1f3b73; --card-back-2:#2f6fed; --border:#d9deea;
+  --shadow:0 4px 14px rgba(20,30,60,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1420; --surface:#181f2e; --text:#e6eaf3; --muted:#9aa4b8;
+    --accent:#5b8dff; --accent-2:#2fc79a; --danger:#ff6b76;
+    --card-back:#22355e; --card-back-2:#3a5fb8; --border:#2a3448;
+    --shadow:0 4px 14px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1420; --surface:#181f2e; --text:#e6eaf3; --muted:#9aa4b8;
+  --accent:#5b8dff; --accent-2:#2fc79a; --danger:#ff6b76;
+  --card-back:#22355e; --card-back-2:#3a5fb8; --border:#2a3448;
+  --shadow:0 4px 14px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 40px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{margin:0;font-size:1.6rem}
+h1 span{color:var(--accent)}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.voltar{display:inline-block;margin-bottom:4px;font-size:.88rem;color:var(--muted);text-decoration:none}
+.voltar:hover{color:var(--accent)}
+.promo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-bottom:14px;
+  padding:14px 16px;border-radius:12px;text-decoration:none;color:var(--text);
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 45%,var(--border))}
+.mais{margin-top:20px}
+.promo:hover{border-color:var(--accent)}
+.promo:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.promo-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 260px}
+.promo-txt small{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+.promo-txt b{font-size:1.15rem;color:var(--accent)}
+.promo-txt span{font-size:.9rem;color:var(--muted)}
+.promo-cta{background:var(--accent);color:#fff;font-weight:600;border-radius:8px;padding:10px 16px;white-space:nowrap}
+@media (max-width:560px){.promo-cta{flex:1;text-align:center}}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px}
+label{font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+select,button{font:inherit;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg);color:var(--text);padding:8px 10px}
+button{cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button:focus-visible,select:focus-visible,.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.spacer{flex:1}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;min-width:96px}
+.stat b{display:block;font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.mode-note{color:var(--muted);font-size:.88rem;margin:0 0 12px}
+.board{display:grid;gap:10px;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr))}
+.card{perspective:900px;aspect-ratio:3/4;border:0;padding:0;background:none;cursor:pointer}
+.inner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.card.flipped .inner,.card.matched .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;text-align:center;box-shadow:var(--shadow)}
+.back{background:linear-gradient(135deg,var(--card-back),var(--card-back-2));color:#fff;font-family:ui-monospace,Consolas,monospace;font-size:1.3rem;font-weight:700}
+.back::after{content:"</>";opacity:.85}
+.front{background:var(--surface);border:2px solid var(--border);transform:rotateY(180deg);color:var(--text)}
+.front .ico{font-size:1.9rem;line-height:1}
+.front .term{font-weight:700;font-size:clamp(.8rem,2.2vw,1.05rem);margin-top:6px;word-break:break-word}
+.front .def{font-size:clamp(.66rem,1.6vw,.82rem);color:var(--muted);margin-top:4px}
+.front .tag{position:absolute;top:6px;left:8px;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.card.matched .front{border-color:var(--accent-2);background:color-mix(in srgb,var(--accent-2) 12%,var(--surface))}
+.card.wrong .front{border-color:var(--danger);animation:shake .35s}
+@keyframes shake{25%{transform:rotateY(180deg) translateX(-4px)}75%{transform:rotateY(180deg) translateX(4px)}}
+.learn{margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.learn h2{margin:0 0 8px;font-size:1.05rem}
+.learn ul{margin:0;padding-left:18px;columns:2 260px}
+.learn li{margin:0 0 6px;break-inside:avoid;font-size:.9rem}
+.learn li b{color:var(--accent)}
+.empty{color:var(--muted);font-size:.9rem}
+dialog{border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);max-width:380px;width:calc(100% - 32px);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin-top:0}
+@media (max-width:560px){
+  .board{gap:6px}
+  .front .def{display:none}
+  .card.show-def .front .def{display:block}
+  h1{font-size:1.3rem}
+}
+/* ---------- Rodapé: criador e apoio via Pix ---------- */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rodape-site{border-top:1px solid var(--border);background:var(--surface);margin-top:8px}
+.rs-inner{max-width:1000px;margin:0 auto;padding:28px 16px calc(28px + env(safe-area-inset-bottom,0px));
+  display:grid;gap:24px 40px;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);align-items:start}
+.rs-rot{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rs-autor strong{display:block;font-size:1.3rem;font-weight:800;margin-top:2px}
+.rs-autor p{margin:6px 0 0;color:var(--muted);font-size:.9rem;max-width:42ch}
+.rs-pix{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.rs-qr{flex:none;width:176px;max-width:100%;background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:18px}
+.rs-qr svg{display:block;width:100%;height:auto}
+.rs-pix-txt{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.rs-pix-txt h2{margin:0;font-size:1.2rem}
+.rs-pix-txt p{margin:0;font-size:.92rem;max-width:60ch}
+.rs-chave{display:flex;flex-direction:column;gap:2px}
+.rs-chave span{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rs-chave code{font-family:ui-monospace,Consolas,monospace;font-size:1rem;overflow-wrap:anywhere;user-select:all}
+.rs-botoes{display:flex;gap:8px;flex-wrap:wrap}
+.rs-botoes button{min-height:44px}
+.rs-aviso{color:var(--muted);font-size:.82rem!important}
+.rs-aviso.ok{color:var(--accent-2)}
+@media (max-width:760px){ .rs-inner{grid-template-columns:1fr} .rs-pix{flex-direction:column;align-items:stretch} .rs-qr{align-self:center;width:200px} .rs-botoes>*{flex:1 1 180px} }
+@media (prefers-reduced-motion:reduce){.inner{transition:none}.card.wrong .front{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <a class="voltar" href="./">← Games TI</a>
+      <h1>Memória <span>TI</span></h1>
+      <p class="sub">Encontre os pares e aprenda conceitos de tecnologia.</p>
+    </div>
+    <button id="themeBtn" aria-label="Alternar tema">🌓 Tema</button>
+  </header>
+
+  <div class="controls">
+    <label>Categoria
+      <select id="cat">
+        <option value="todas">Todas</option>
+        <option value="redes">Redes</option>
+        <option value="prog">Programação</option>
+        <option value="seg">Segurança</option>
+        <option value="hw">Hardware</option>
+        <option value="cloud">Cloud & DevOps</option>
+        <option value="dados">Banco de Dados</option>
+      </select>
+    </label>
+    <label>Dificuldade
+      <select id="diff">
+        <option value="6">Fácil (6 pares)</option>
+        <option value="8" selected>Médio (8 pares)</option>
+        <option value="12">Difícil (12 pares)</option>
+      </select>
+    </label>
+    <label>Modo
+      <select id="mode">
+        <option value="conceito">Sigla ↔ Significado</option>
+        <option value="igual">Cartas iguais</option>
+      </select>
+    </label>
+    <div class="spacer"></div>
+    <button class="primary" id="newBtn">Novo jogo</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Jogadas</small><b id="moves">0</b></div>
+    <div class="stat"><small>Pares</small><b id="pairs">0/0</b></div>
+    <div class="stat"><small>Tempo</small><b id="time">0:00</b></div>
+    <div class="stat"><small>Recorde</small><b id="best">—</b></div>
+  </div>
+  <p class="mode-note" id="modeNote"></p>
+
+  <div class="board" id="board" aria-label="Tabuleiro"></div>
+
+  <section class="learn">
+    <h2>📚 Conceitos aprendidos nesta partida</h2>
+    <ul id="learned"><li class="empty">Forme pares para ver as definições aqui.</li></ul>
+  </section>
+
+  <div class="mais">
+  <a class="promo" href="classifica-ti.html">
+    <span class="promo-txt">
+      <small>Quer mais? Experimente também</small>
+      <b>Classifica TI</b>
+      <span>27 jogos para fixar COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps, computação em nuvem, Docker, Kubernetes e mais.</span>
+    </span>
+    <span class="promo-cta">Jogar agora →</span>
+  </a>
+  </div>
+</div>
+
+<footer class="rodape-site">
+  <div class="rs-inner">
+    <div class="rs-autor">
+      <span class="rs-rot">Criador do projeto</span>
+      <strong>Dougllas Diniz</strong>
+      <p>Criei o Memória TI e o Classifica TI para ajudar quem estuda tecnologia e concursos de TI. O uso é livre e gratuito.</p>
+    </div>
+    <div class="rs-pix">
+      <div class="rs-qr" id="pix-qr" role="img" aria-label="QR Code para fazer um Pix ao criador do projeto"></div>
+      <div class="rs-pix-txt">
+        <h2>Gostou? Apoie com um Pix</h2>
+        <p>Se os jogos estão ajudando nos seus estudos, faça um Pix de qualquer valor. O valor de um café já ajuda a manter o conteúdo atualizado com as novas versões das normas e a criar novos jogos. Obrigado pelo apoio!</p>
+        <div class="rs-chave"><span>Chave Pix (e-mail)</span><code id="pix-chave">dmd.dougllas@gmail.com</code></div>
+        <div class="rs-botoes">
+          <button class="primary" id="copiar-pix" type="button">Copiar Pix copia e cola</button>
+          <button id="copiar-chave" type="button">Copiar chave</button>
+        </div>
+        <p class="rs-aviso" id="pix-aviso" aria-live="polite">Abra o app do seu banco e leia o QR Code, ou copie o código e use a opção Pix copia e cola.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* ---------- Pix: QR Code e botões de copiar ---------- */
+(function(){
+  const PIX = "00020126440014br.gov.bcb.pix0122dmd.dougllas@gmail.com5204000053039865802BR5914DOUGLLAS DINIZ6006BRASIL62070503***6304DF49";
+  const CHAVE = "dmd.dougllas@gmail.com";
+  const caixa = document.getElementById("pix-qr");
+  try {
+    const q = qrcode(0, "M"); q.addData(PIX); q.make();
+    const n = q.getModuleCount(); let d = "";
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+    caixa.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><rect width="${n}" height="${n}" fill="#ffffff"/><path d="${d}" fill="#000000"/></svg>`;
+  } catch (e) { caixa.hidden = true; }
+  const aviso = document.getElementById("pix-aviso");
+  function copiar(texto, msg, alvoSelecao) {
+    const ok = () => { aviso.textContent = msg; aviso.classList.add("ok"); };
+    const falha = () => {
+      const sel = getSelection(), r = document.createRange();
+      r.selectNodeContents(alvoSelecao); sel.removeAllRanges(); sel.addRange(r);
+      aviso.textContent = "Não deu para copiar automaticamente. O texto está selecionado: copie manualmente.";
+      aviso.classList.remove("ok");
+    };
+    try { navigator.clipboard.writeText(texto).then(ok, falha); } catch (e) { falha(); }
+  }
+  const chaveEl = document.getElementById("pix-chave");
+  document.getElementById("copiar-chave").addEventListener("click", () => copiar(CHAVE, "Chave Pix copiada. Cole no app do seu banco.", chaveEl));
+  document.getElementById("copiar-pix").addEventListener("click", () => {
+    const tmp = document.createElement("span"); tmp.textContent = PIX; tmp.className = "sr"; document.body.append(tmp);
+    copiar(PIX, "Código Pix copia e cola copiado. Cole no app do seu banco.", tmp);
+    setTimeout(() => tmp.remove(), 4000);
+  });
+})();
+</script>
+
+<dialog id="winDlg">
+  <h2>🎉 Parabéns!</h2>
+  <p id="winText"></p>
+  <form method="dialog" style="display:flex;gap:8px;justify-content:flex-end">
+    <button value="close">Fechar</button>
+    <button class="primary" value="again" id="againBtn">Jogar de novo</button>
+  </form>
+</dialog>
+
+<script>
+const DATA = [
+  // Redes
+  {c:"redes",i:"🌐",t:"HTTP",d:"Protocolo de transferência de hipertexto"},
+  {c:"redes",i:"🔒",t:"HTTPS",d:"HTTP com criptografia TLS"},
+  {c:"redes",i:"📇",t:"DNS",d:"Traduz nomes de domínio em endereços IP"},
+  {c:"redes",i:"🏷️",t:"DHCP",d:"Atribui endereços IP automaticamente"},
+  {c:"redes",i:"📦",t:"TCP",d:"Transporte confiável e orientado à conexão"},
+  {c:"redes",i:"⚡",t:"UDP",d:"Transporte rápido, sem garantia de entrega"},
+  {c:"redes",i:"🏠",t:"LAN",d:"Rede local de área restrita"},
+  {c:"redes",i:"🔀",t:"Roteador",d:"Encaminha pacotes entre redes"},
+  {c:"redes",i:"📬",t:"SMTP",d:"Protocolo de envio de e-mails"},
+  {c:"redes",i:"🔢",t:"IPv6",d:"Endereço IP de 128 bits"},
+  // Programação
+  {c:"prog",i:"🧩",t:"API",d:"Interface para sistemas se comunicarem"},
+  {c:"prog",i:"🐞",t:"Bug",d:"Defeito ou erro em um programa"},
+  {c:"prog",i:"🔁",t:"Loop",d:"Estrutura que repete instruções"},
+  {c:"prog",i:"🧱",t:"POO",d:"Programação Orientada a Objetos"},
+  {c:"prog",i:"🌿",t:"Git",d:"Sistema de controle de versão distribuído"},
+  {c:"prog",i:"📄",t:"JSON",d:"Formato leve de troca de dados"},
+  {c:"prog",i:"⚙️",t:"Compilador",d:"Traduz código-fonte para código de máquina"},
+  {c:"prog",i:"🪆",t:"Recursão",d:"Função que chama a si mesma"},
+  {c:"prog",i:"🧪",t:"TDD",d:"Desenvolvimento guiado por testes"},
+  {c:"prog",i:"🎨",t:"CSS",d:"Linguagem de estilo para páginas web"},
+  // Segurança
+  {c:"seg",i:"🧱",t:"Firewall",d:"Filtra o tráfego de rede por regras"},
+  {c:"seg",i:"🎣",t:"Phishing",d:"Golpe que imita fontes confiáveis"},
+  {c:"seg",i:"🔐",t:"2FA",d:"Autenticação em dois fatores"},
+  {c:"seg",i:"🦠",t:"Malware",d:"Software malicioso"},
+  {c:"seg",i:"💰",t:"Ransomware",d:"Sequestra dados e exige resgate"},
+  {c:"seg",i:"🕳️",t:"VPN",d:"Túnel criptografado sobre a internet"},
+  {c:"seg",i:"🔑",t:"Hash",d:"Resumo de tamanho fixo e irreversível"},
+  {c:"seg",i:"💉",t:"SQL Injection",d:"Injeção de comandos em consultas SQL"},
+  {c:"seg",i:"🌊",t:"DDoS",d:"Ataque distribuído de negação de serviço"},
+  {c:"seg",i:"📜",t:"LGPD",d:"Lei Geral de Proteção de Dados"},
+  // Hardware
+  {c:"hw",i:"🧠",t:"CPU",d:"Unidade central de processamento"},
+  {c:"hw",i:"🎮",t:"GPU",d:"Processador especializado em gráficos"},
+  {c:"hw",i:"💨",t:"RAM",d:"Memória volátil de acesso aleatório"},
+  {c:"hw",i:"💾",t:"SSD",d:"Armazenamento em memória flash"},
+  {c:"hw",i:"🔌",t:"USB",d:"Barramento serial universal"},
+  {c:"hw",i:"🧬",t:"BIOS",d:"Firmware que inicializa o hardware"},
+  {c:"hw",i:"🔋",t:"Fonte",d:"Converte energia para os componentes"},
+  {c:"hw",i:"🗺️",t:"Placa-mãe",d:"Conecta todos os componentes do PC"},
+  {c:"hw",i:"🖥️",t:"Cache",d:"Memória ultrarrápida próxima à CPU"},
+  // Cloud & DevOps
+  {c:"cloud",i:"🐳",t:"Docker",d:"Plataforma de contêineres"},
+  {c:"cloud",i:"☸️",t:"Kubernetes",d:"Orquestrador de contêineres"},
+  {c:"cloud",i:"🚀",t:"CI/CD",d:"Integração e entrega contínuas"},
+  {c:"cloud",i:"☁️",t:"SaaS",d:"Software como serviço"},
+  {c:"cloud",i:"🏗️",t:"IaaS",d:"Infraestrutura como serviço"},
+  {c:"cloud",i:"🧰",t:"PaaS",d:"Plataforma como serviço"},
+  {c:"cloud",i:"📝",t:"IaC",d:"Infraestrutura como código"},
+  {c:"cloud",i:"⚖️",t:"Load Balancer",d:"Distribui carga entre servidores"},
+  {c:"cloud",i:"λ",t:"Serverless",d:"Execução sem gerenciar servidores"},
+  {c:"cloud",i:"📈",t:"Escalabilidade",d:"Capacidade de crescer com a demanda"},
+  // Banco de Dados
+  {c:"dados",i:"🗄️",t:"SQL",d:"Linguagem de consulta estruturada"},
+  {c:"dados",i:"🍃",t:"NoSQL",d:"Bancos não relacionais"},
+  {c:"dados",i:"🗝️",t:"Chave primária",d:"Identifica unicamente um registro"},
+  {c:"dados",i:"🔗",t:"Chave estrangeira",d:"Referencia registro de outra tabela"},
+  {c:"dados",i:"🧾",t:"ACID",d:"Atomicidade, Consistência, Isolamento, Durabilidade"},
+  {c:"dados",i:"📑",t:"Índice",d:"Acelera buscas em uma tabela"},
+  {c:"dados",i:"🧹",t:"Normalização",d:"Reduz redundância nas tabelas"},
+  {c:"dados",i:"🤝",t:"JOIN",d:"Combina linhas de tabelas relacionadas"},
+];
+const CAT_NAMES = {redes:"Redes",prog:"Programação",seg:"Segurança",hw:"Hardware",cloud:"Cloud",dados:"Dados"};
+
+const $ = s => document.querySelector(s);
+const board = $("#board");
+let first=null, lock=false, moves=0, matched=0, total=0, timer=null, seconds=0, started=false, learned=[];
+
+const store = {
+  get(k){try{return localStorage.getItem(k)}catch{return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch{}}
+};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function fmt(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function bestKey(){return `memti-best-${$("#cat").value}-${$("#diff").value}-${$("#mode").value}`}
+
+function showBest(){
+  const b = store.get(bestKey());
+  if(!b){$("#best").textContent="—";return}
+  const o = JSON.parse(b); $("#best").textContent = `${o.m} jog · ${fmt(o.s)}`;
+}
+
+function cols(n){
+  const w = window.innerWidth;
+  if(n<=12) return w<560?3:4;
+  if(n<=16) return 4;
+  return w<560?4:6;
+}
+
+function newGame(){
+  clearInterval(timer); timer=null; started=false; seconds=0; moves=0; matched=0; first=null; lock=false; learned=[];
+  const cat=$("#cat").value, nPairs=+$("#diff").value, mode=$("#mode").value;
+  let pool = DATA.filter(x=>cat==="todas"||x.c===cat);
+  const picks = shuffle(pool.slice()).slice(0,Math.min(nPairs,pool.length));
+  total = picks.length;
+  const cards=[];
+  picks.forEach((p,id)=>{
+    if(mode==="conceito"){
+      cards.push({id,p,kind:"term"},{id,p,kind:"def"});
+    }else{
+      cards.push({id,p,kind:"both"},{id,p,kind:"both"});
+    }
+  });
+  shuffle(cards);
+  board.style.setProperty("--cols",cols(cards.length));
+  board.innerHTML="";
+  cards.forEach((c,idx)=>{
+    const el=document.createElement("button");
+    el.className="card"; el.dataset.id=c.id; el.dataset.idx=idx;
+    el.setAttribute("aria-label","Carta virada");
+    let front;
+    if(c.kind==="term") front=`<span class="tag">${CAT_NAMES[c.p.c]}</span><div class="ico">${c.p.i}</div><div class="term">${c.p.t}</div>`;
+    else if(c.kind==="def") front=`<span class="tag">Significado</span><div class="def" style="display:block;font-size:clamp(.72rem,1.9vw,.92rem);color:var(--text)">${c.p.d}</div>`;
+    else front=`<span class="tag">${CAT_NAMES[c.p.c]}</span><div class="ico">${c.p.i}</div><div class="term">${c.p.t}</div><div class="def">${c.p.d}</div>`;
+    el.innerHTML=`<div class="inner"><div class="face back"></div><div class="face front">${front}</div></div>`;
+    el._label = c.kind==="def" ? `Significado: ${c.p.d}` : `${c.p.t}`;
+    el.addEventListener("click",()=>flip(el));
+    board.appendChild(el);
+  });
+  $("#modeNote").textContent = mode==="conceito"
+    ? "Combine cada sigla/termo com a carta do seu significado."
+    : "Encontre as duas cartas iguais.";
+  renderLearned(); updateStats(); showBest();
+}
+
+function updateStats(){
+  $("#moves").textContent=moves;
+  $("#pairs").textContent=`${matched}/${total}`;
+  $("#time").textContent=fmt(seconds);
+}
+
+function flip(el){
+  if(lock||el===first||el.classList.contains("matched")) return;
+  if(!started){started=true;timer=setInterval(()=>{seconds++;updateStats()},1000)}
+  el.classList.add("flipped"); el.setAttribute("aria-label",el._label);
+  if(!first){first=el;return}
+  moves++;
+  const a=first, b=el; first=null;
+  if(a.dataset.id===b.dataset.id){
+    a.classList.add("matched"); b.classList.add("matched");
+    matched++;
+    const p = DATA.find(x=>x.t===getTerm(a,b));
+    if(p) learned.push(p);
+    renderLearned(); updateStats();
+    if(matched===total) win();
+  }else{
+    lock=true; a.classList.add("wrong"); b.classList.add("wrong"); updateStats();
+    setTimeout(()=>{
+      [a,b].forEach(x=>{x.classList.remove("flipped","wrong");x.setAttribute("aria-label","Carta virada")});
+      lock=false;
+    },900);
+  }
+}
+function getTerm(a,b){
+  const t = (a.querySelector(".term")||b.querySelector(".term"));
+  return t?t.textContent:"";
+}
+
+function renderLearned(){
+  const ul=$("#learned");
+  if(!learned.length){ul.innerHTML='<li class="empty">Forme pares para ver as definições aqui.</li>';return}
+  ul.innerHTML=learned.map(p=>`<li>${p.i} <b>${p.t}</b> — ${p.d}</li>`).join("");
+}
+
+function win(){
+  clearInterval(timer);
+  const k=bestKey(), prev=store.get(k);
+  let record=false;
+  if(!prev){record=true}else{
+    const o=JSON.parse(prev);
+    if(moves<o.m||(moves===o.m&&seconds<o.s)) record=true;
+  }
+  if(record) store.set(k,JSON.stringify({m:moves,s:seconds}));
+  showBest();
+  const perfect = moves===total;
+  $("#winText").innerHTML = `Você encontrou os <b>${total}</b> pares em <b>${moves}</b> jogadas e <b>${fmt(seconds)}</b>.`
+    + (record?"<br>🏆 Novo recorde!":"") + (perfect?"<br>✨ Partida perfeita!":"");
+  setTimeout(()=>{ if($("#winDlg").showModal) $("#winDlg").showModal(); },500);
+}
+
+$("#newBtn").addEventListener("click",newGame);
+["#cat","#diff","#mode"].forEach(s=>$(s).addEventListener("change",newGame));
+$("#winDlg").addEventListener("close",()=>{ if($("#winDlg").returnValue==="again") newGame(); });
+$("#themeBtn").addEventListener("click",()=>{
+  const r=document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark?"light":"dark"; store.set("memti-theme",r.dataset.theme);
+});
+const savedTheme=store.get("memti-theme"); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+let rT; addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>board.style.setProperty("--cols",cols(board.children.length)),150)});
+newGame();
+</script>
+</body>
+</html>

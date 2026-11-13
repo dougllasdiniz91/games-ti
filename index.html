@@ -127,6 +127,15 @@ dialog h2{margin-top:0}
     <button id="themeBtn" aria-label="Alternar tema">🌓 Tema</button>
   </header>
 
+  <a class="promo" href="memoria-ti.html">
+    <span class="promo-txt">
+      <small>Para aprender brincando</small>
+      <b>Memória TI</b>
+      <span>Jogo da memória com 57 conceitos de redes, programação, segurança, hardware, cloud e banco de dados.</span>
+    </span>
+    <span class="promo-cta">Jogar agora →</span>
+  </a>
+
   <a class="promo" href="classifica-ti.html">
     <span class="promo-txt">
       <small>Estudando para concurso?</small>
@@ -135,55 +144,6 @@ dialog h2{margin-top:0}
     </span>
     <span class="promo-cta">Jogar agora →</span>
   </a>
-
-  <div class="jogo-tit">
-    <h2>Memória TI</h2>
-    <p class="sub">Encontre os pares e aprenda conceitos de tecnologia.</p>
-  </div>
-
-  <div class="controls">
-    <label>Categoria
-      <select id="cat">
-        <option value="todas">Todas</option>
-        <option value="redes">Redes</option>
-        <option value="prog">Programação</option>
-        <option value="seg">Segurança</option>
-        <option value="hw">Hardware</option>
-        <option value="cloud">Cloud & DevOps</option>
-        <option value="dados">Banco de Dados</option>
-      </select>
-    </label>
-    <label>Dificuldade
-      <select id="diff">
-        <option value="6">Fácil (6 pares)</option>
-        <option value="8" selected>Médio (8 pares)</option>
-        <option value="12">Difícil (12 pares)</option>
-      </select>
-    </label>
-    <label>Modo
-      <select id="mode">
-        <option value="conceito">Sigla ↔ Significado</option>
-        <option value="igual">Cartas iguais</option>
-      </select>
-    </label>
-    <div class="spacer"></div>
-    <button class="primary" id="newBtn">Novo jogo</button>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><small>Jogadas</small><b id="moves">0</b></div>
-    <div class="stat"><small>Pares</small><b id="pairs">0/0</b></div>
-    <div class="stat"><small>Tempo</small><b id="time">0:00</b></div>
-    <div class="stat"><small>Recorde</small><b id="best">—</b></div>
-  </div>
-  <p class="mode-note" id="modeNote"></p>
-
-  <div class="board" id="board" aria-label="Tabuleiro"></div>
-
-  <section class="learn">
-    <h2>📚 Conceitos aprendidos nesta partida</h2>
-    <ul id="learned"><li class="empty">Forme pares para ver as definições aqui.</li></ul>
-  </section>
 </div>
 
 <footer class="rodape-site">
@@ -242,211 +202,18 @@ dialog h2{margin-top:0}
 })();
 </script>
 
-<dialog id="winDlg">
-  <h2>🎉 Parabéns!</h2>
-  <p id="winText"></p>
-  <form method="dialog" style="display:flex;gap:8px;justify-content:flex-end">
-    <button value="close">Fechar</button>
-    <button class="primary" value="again" id="againBtn">Jogar de novo</button>
-  </form>
-</dialog>
 
 <script>
-const DATA = [
-  // Redes
-  {c:"redes",i:"🌐",t:"HTTP",d:"Protocolo de transferência de hipertexto"},
-  {c:"redes",i:"🔒",t:"HTTPS",d:"HTTP com criptografia TLS"},
-  {c:"redes",i:"📇",t:"DNS",d:"Traduz nomes de domínio em endereços IP"},
-  {c:"redes",i:"🏷️",t:"DHCP",d:"Atribui endereços IP automaticamente"},
-  {c:"redes",i:"📦",t:"TCP",d:"Transporte confiável e orientado à conexão"},
-  {c:"redes",i:"⚡",t:"UDP",d:"Transporte rápido, sem garantia de entrega"},
-  {c:"redes",i:"🏠",t:"LAN",d:"Rede local de área restrita"},
-  {c:"redes",i:"🔀",t:"Roteador",d:"Encaminha pacotes entre redes"},
-  {c:"redes",i:"📬",t:"SMTP",d:"Protocolo de envio de e-mails"},
-  {c:"redes",i:"🔢",t:"IPv6",d:"Endereço IP de 128 bits"},
-  // Programação
-  {c:"prog",i:"🧩",t:"API",d:"Interface para sistemas se comunicarem"},
-  {c:"prog",i:"🐞",t:"Bug",d:"Defeito ou erro em um programa"},
-  {c:"prog",i:"🔁",t:"Loop",d:"Estrutura que repete instruções"},
-  {c:"prog",i:"🧱",t:"POO",d:"Programação Orientada a Objetos"},
-  {c:"prog",i:"🌿",t:"Git",d:"Sistema de controle de versão distribuído"},
-  {c:"prog",i:"📄",t:"JSON",d:"Formato leve de troca de dados"},
-  {c:"prog",i:"⚙️",t:"Compilador",d:"Traduz código-fonte para código de máquina"},
-  {c:"prog",i:"🪆",t:"Recursão",d:"Função que chama a si mesma"},
-  {c:"prog",i:"🧪",t:"TDD",d:"Desenvolvimento guiado por testes"},
-  {c:"prog",i:"🎨",t:"CSS",d:"Linguagem de estilo para páginas web"},
-  // Segurança
-  {c:"seg",i:"🧱",t:"Firewall",d:"Filtra o tráfego de rede por regras"},
-  {c:"seg",i:"🎣",t:"Phishing",d:"Golpe que imita fontes confiáveis"},
-  {c:"seg",i:"🔐",t:"2FA",d:"Autenticação em dois fatores"},
-  {c:"seg",i:"🦠",t:"Malware",d:"Software malicioso"},
-  {c:"seg",i:"💰",t:"Ransomware",d:"Sequestra dados e exige resgate"},
-  {c:"seg",i:"🕳️",t:"VPN",d:"Túnel criptografado sobre a internet"},
-  {c:"seg",i:"🔑",t:"Hash",d:"Resumo de tamanho fixo e irreversível"},
-  {c:"seg",i:"💉",t:"SQL Injection",d:"Injeção de comandos em consultas SQL"},
-  {c:"seg",i:"🌊",t:"DDoS",d:"Ataque distribuído de negação de serviço"},
-  {c:"seg",i:"📜",t:"LGPD",d:"Lei Geral de Proteção de Dados"},
-  // Hardware
-  {c:"hw",i:"🧠",t:"CPU",d:"Unidade central de processamento"},
-  {c:"hw",i:"🎮",t:"GPU",d:"Processador especializado em gráficos"},
-  {c:"hw",i:"💨",t:"RAM",d:"Memória volátil de acesso aleatório"},
-  {c:"hw",i:"💾",t:"SSD",d:"Armazenamento em memória flash"},
-  {c:"hw",i:"🔌",t:"USB",d:"Barramento serial universal"},
-  {c:"hw",i:"🧬",t:"BIOS",d:"Firmware que inicializa o hardware"},
-  {c:"hw",i:"🔋",t:"Fonte",d:"Converte energia para os componentes"},
-  {c:"hw",i:"🗺️",t:"Placa-mãe",d:"Conecta todos os componentes do PC"},
-  {c:"hw",i:"🖥️",t:"Cache",d:"Memória ultrarrápida próxima à CPU"},
-  // Cloud & DevOps
-  {c:"cloud",i:"🐳",t:"Docker",d:"Plataforma de contêineres"},
-  {c:"cloud",i:"☸️",t:"Kubernetes",d:"Orquestrador de contêineres"},
-  {c:"cloud",i:"🚀",t:"CI/CD",d:"Integração e entrega contínuas"},
-  {c:"cloud",i:"☁️",t:"SaaS",d:"Software como serviço"},
-  {c:"cloud",i:"🏗️",t:"IaaS",d:"Infraestrutura como serviço"},
-  {c:"cloud",i:"🧰",t:"PaaS",d:"Plataforma como serviço"},
-  {c:"cloud",i:"📝",t:"IaC",d:"Infraestrutura como código"},
-  {c:"cloud",i:"⚖️",t:"Load Balancer",d:"Distribui carga entre servidores"},
-  {c:"cloud",i:"λ",t:"Serverless",d:"Execução sem gerenciar servidores"},
-  {c:"cloud",i:"📈",t:"Escalabilidade",d:"Capacidade de crescer com a demanda"},
-  // Banco de Dados
-  {c:"dados",i:"🗄️",t:"SQL",d:"Linguagem de consulta estruturada"},
-  {c:"dados",i:"🍃",t:"NoSQL",d:"Bancos não relacionais"},
-  {c:"dados",i:"🗝️",t:"Chave primária",d:"Identifica unicamente um registro"},
-  {c:"dados",i:"🔗",t:"Chave estrangeira",d:"Referencia registro de outra tabela"},
-  {c:"dados",i:"🧾",t:"ACID",d:"Atomicidade, Consistência, Isolamento, Durabilidade"},
-  {c:"dados",i:"📑",t:"Índice",d:"Acelera buscas em uma tabela"},
-  {c:"dados",i:"🧹",t:"Normalização",d:"Reduz redundância nas tabelas"},
-  {c:"dados",i:"🤝",t:"JOIN",d:"Combina linhas de tabelas relacionadas"},
-];
-const CAT_NAMES = {redes:"Redes",prog:"Programação",seg:"Segurança",hw:"Hardware",cloud:"Cloud",dados:"Dados"};
-
-const $ = s => document.querySelector(s);
-const board = $("#board");
-let first=null, lock=false, moves=0, matched=0, total=0, timer=null, seconds=0, started=false, learned=[];
-
 const store = {
   get(k){try{return localStorage.getItem(k)}catch{return null}},
   set(k,v){try{localStorage.setItem(k,v)}catch{}}
 };
-
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function fmt(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
-function bestKey(){return `memti-best-${$("#cat").value}-${$("#diff").value}-${$("#mode").value}`}
-
-function showBest(){
-  const b = store.get(bestKey());
-  if(!b){$("#best").textContent="—";return}
-  const o = JSON.parse(b); $("#best").textContent = `${o.m} jog · ${fmt(o.s)}`;
-}
-
-function cols(n){
-  const w = window.innerWidth;
-  if(n<=12) return w<560?3:4;
-  if(n<=16) return 4;
-  return w<560?4:6;
-}
-
-function newGame(){
-  clearInterval(timer); timer=null; started=false; seconds=0; moves=0; matched=0; first=null; lock=false; learned=[];
-  const cat=$("#cat").value, nPairs=+$("#diff").value, mode=$("#mode").value;
-  let pool = DATA.filter(x=>cat==="todas"||x.c===cat);
-  const picks = shuffle(pool.slice()).slice(0,Math.min(nPairs,pool.length));
-  total = picks.length;
-  const cards=[];
-  picks.forEach((p,id)=>{
-    if(mode==="conceito"){
-      cards.push({id,p,kind:"term"},{id,p,kind:"def"});
-    }else{
-      cards.push({id,p,kind:"both"},{id,p,kind:"both"});
-    }
-  });
-  shuffle(cards);
-  board.style.setProperty("--cols",cols(cards.length));
-  board.innerHTML="";
-  cards.forEach((c,idx)=>{
-    const el=document.createElement("button");
-    el.className="card"; el.dataset.id=c.id; el.dataset.idx=idx;
-    el.setAttribute("aria-label","Carta virada");
-    let front;
-    if(c.kind==="term") front=`<span class="tag">${CAT_NAMES[c.p.c]}</span><div class="ico">${c.p.i}</div><div class="term">${c.p.t}</div>`;
-    else if(c.kind==="def") front=`<span class="tag">Significado</span><div class="def" style="display:block;font-size:clamp(.72rem,1.9vw,.92rem);color:var(--text)">${c.p.d}</div>`;
-    else front=`<span class="tag">${CAT_NAMES[c.p.c]}</span><div class="ico">${c.p.i}</div><div class="term">${c.p.t}</div><div class="def">${c.p.d}</div>`;
-    el.innerHTML=`<div class="inner"><div class="face back"></div><div class="face front">${front}</div></div>`;
-    el._label = c.kind==="def" ? `Significado: ${c.p.d}` : `${c.p.t}`;
-    el.addEventListener("click",()=>flip(el));
-    board.appendChild(el);
-  });
-  $("#modeNote").textContent = mode==="conceito"
-    ? "Combine cada sigla/termo com a carta do seu significado."
-    : "Encontre as duas cartas iguais.";
-  renderLearned(); updateStats(); showBest();
-}
-
-function updateStats(){
-  $("#moves").textContent=moves;
-  $("#pairs").textContent=`${matched}/${total}`;
-  $("#time").textContent=fmt(seconds);
-}
-
-function flip(el){
-  if(lock||el===first||el.classList.contains("matched")) return;
-  if(!started){started=true;timer=setInterval(()=>{seconds++;updateStats()},1000)}
-  el.classList.add("flipped"); el.setAttribute("aria-label",el._label);
-  if(!first){first=el;return}
-  moves++;
-  const a=first, b=el; first=null;
-  if(a.dataset.id===b.dataset.id){
-    a.classList.add("matched"); b.classList.add("matched");
-    matched++;
-    const p = DATA.find(x=>x.t===getTerm(a,b));
-    if(p) learned.push(p);
-    renderLearned(); updateStats();
-    if(matched===total) win();
-  }else{
-    lock=true; a.classList.add("wrong"); b.classList.add("wrong"); updateStats();
-    setTimeout(()=>{
-      [a,b].forEach(x=>{x.classList.remove("flipped","wrong");x.setAttribute("aria-label","Carta virada")});
-      lock=false;
-    },900);
-  }
-}
-function getTerm(a,b){
-  const t = (a.querySelector(".term")||b.querySelector(".term"));
-  return t?t.textContent:"";
-}
-
-function renderLearned(){
-  const ul=$("#learned");
-  if(!learned.length){ul.innerHTML='<li class="empty">Forme pares para ver as definições aqui.</li>';return}
-  ul.innerHTML=learned.map(p=>`<li>${p.i} <b>${p.t}</b> — ${p.d}</li>`).join("");
-}
-
-function win(){
-  clearInterval(timer);
-  const k=bestKey(), prev=store.get(k);
-  let record=false;
-  if(!prev){record=true}else{
-    const o=JSON.parse(prev);
-    if(moves<o.m||(moves===o.m&&seconds<o.s)) record=true;
-  }
-  if(record) store.set(k,JSON.stringify({m:moves,s:seconds}));
-  showBest();
-  const perfect = moves===total;
-  $("#winText").innerHTML = `Você encontrou os <b>${total}</b> pares em <b>${moves}</b> jogadas e <b>${fmt(seconds)}</b>.`
-    + (record?"<br>🏆 Novo recorde!":"") + (perfect?"<br>✨ Partida perfeita!":"");
-  setTimeout(()=>{ if($("#winDlg").showModal) $("#winDlg").showModal(); },500);
-}
-
-$("#newBtn").addEventListener("click",newGame);
-["#cat","#diff","#mode"].forEach(s=>$(s).addEventListener("change",newGame));
-$("#winDlg").addEventListener("close",()=>{ if($("#winDlg").returnValue==="again") newGame(); });
-$("#themeBtn").addEventListener("click",()=>{
+document.getElementById("themeBtn").addEventListener("click",()=>{
   const r=document.documentElement;
   const dark = r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
   r.dataset.theme = dark?"light":"dark"; store.set("memti-theme",r.dataset.theme);
 });
 const savedTheme=store.get("memti-theme"); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
-let rT; addEventListener("resize",()=>{clearTimeout(rT);rT=setTimeout(()=>board.style.setProperty("--cols",cols(board.children.length)),150)});
-newGame();
 </script>
 </body>
 </html>
