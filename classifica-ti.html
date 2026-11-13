@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Jogos de classificação para concursos de TI: COBIT 2019, ITIL 4, PMBOK 8, ISO 27001, Scrum, DevOps, computação em nuvem, Docker, Kubernetes e mais.">
 <title>Classifica TI</title>
+<script>try{const t=localStorage.getItem("memti-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -50,6 +51,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
 
 /* ---------- Menu ---------- */
 .topo{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.topo-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .topo h1{font-size:clamp(1.8rem,5vw,2.7rem);font-weight:800;letter-spacing:-.02em}
 .topo h1 span{color:var(--primary)}
 .topo p{margin:0;color:var(--muted);max-width:62ch}
@@ -641,6 +643,14 @@ const fmtData = iso => { const d=new Date(iso); return isNaN(d)?"":d.toLocaleDat
 const rotulo = it => it[0] ? it[0]+" · "+it[1] : it[1];
 const telaLarga = () => matchMedia("(min-width:900px)").matches;
 
+/* ---------- Tema (mesma escolha da página inicial e do Memória TI) ---------- */
+function alternarTema(){
+  const r=document.documentElement;
+  const escuro = r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = escuro?"light":"dark";
+  try{ localStorage.setItem("memti-theme",r.dataset.theme) }catch{}
+}
+
 /* ---------- Menu ---------- */
 function ficha(j){
   const r=guarda.ler(chaveResultado(j.id),null);
@@ -657,7 +667,9 @@ function telaMenu(){
   document.title="Classifica TI";
   app.replaceChildren(
     el("header",{class:"topo"},
-      el("h1",{},"Classifica ",el("span",{},"TI")),
+      el("div",{class:"topo-linha"},
+        el("h1",{},"Classifica ",el("span",{},"TI")),
+        el("button",{class:"btn",type:"button","aria-label":"Alternar tema",onclick:alternarTema},"🌓 Tema")),
       el("p",{},"Treino para concursos: aparece um item por vez e você toca no grupo a que ele pertence. Se errar, o item volta para o fim da fila.")),
     ...SECOES.map(([titulo,ids])=>el("section",{class:"secao"},
       el("h2",{class:"secao-tit"},titulo),
