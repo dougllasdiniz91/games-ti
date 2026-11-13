@@ -425,6 +425,18 @@ const JOGOS = [
   [null,"Função de ativação ReLU entre camadas densas","MLP"],[null,"Campo receptivo local e compartilhamento de pesos","CNN"],[null,"Saída do passo anterior realimenta o passo seguinte","RNN"],[null,"Arquitetura codificador-decodificador baseada só em atenção (\u201cAttention Is All You Need\u201d)","TRF"]]
 },
 {
+  id:"deep-learning", nome:"Deep learning: conceitos", ver:"42 itens · 6 categorias", antes:"novo",
+  desc:"Diga se cada item é função de ativação, função de perda, otimizador, técnica de regularização, conceito de treinamento ou problema do treinamento.",
+  grupos:[["ATV","Funções de ativação"],["PER","Funções de perda (custo)"],["OTM","Otimizadores"],["REG","Regularização (contra overfitting)"],["TRN","Conceitos de treinamento"],["PRB","Problemas do treinamento"]],
+  itens:[
+  [null,"ReLU","ATV"],[null,"Leaky ReLU","ATV"],[null,"Sigmoide (logística)","ATV"],[null,"Tangente hiperbólica (tanh)","ATV"],[null,"Softmax","ATV"],[null,"GELU","ATV"],[null,"Introduz não linearidade na saída de cada neurônio","ATV"],
+  [null,"Erro quadrático médio (MSE)","PER"],[null,"Erro absoluto médio (MAE)","PER"],[null,"Entropia cruzada binária","PER"],[null,"Entropia cruzada categórica","PER"],[null,"Perda de Huber","PER"],[null,"Hinge loss","PER"],[null,"Mede a distância entre a previsão e o valor real","PER"],
+  [null,"Gradiente descendente estocástico (SGD)","OTM"],[null,"SGD com momentum","OTM"],[null,"Adam","OTM"],[null,"RMSProp","OTM"],[null,"AdaGrad","OTM"],[null,"AdamW","OTM"],[null,"Atualiza os pesos na direção oposta ao gradiente","OTM"],
+  [null,"Dropout","REG"],[null,"Parada antecipada (early stopping)","REG"],[null,"Regularização L2 (weight decay)","REG"],[null,"Regularização L1","REG"],[null,"Aumento de dados (data augmentation)","REG"],[null,"Desliga neurônios aleatoriamente durante o treino","REG"],
+  [null,"Retropropagação (backpropagation)","TRN"],[null,"Época","TRN"],[null,"Lote e minilote (batch, mini-batch)","TRN"],[null,"Taxa de aprendizado (learning rate)","TRN"],[null,"Normalização em lote (batch normalization)","TRN"],[null,"Aprendizado por transferência e ajuste fino (fine-tuning)","TRN"],[null,"Inicialização de pesos (Xavier, He)","TRN"],
+  [null,"Desaparecimento do gradiente (vanishing gradient)","PRB"],[null,"Explosão do gradiente (exploding gradient)","PRB"],[null,"Sobreajuste (overfitting)","PRB"],[null,"Subajuste (underfitting)","PRB"],[null,"Neurônios mortos (dying ReLU)","PRB"],[null,"Mínimos locais e pontos de sela","PRB"],[null,"Esquecimento catastrófico","PRB"],[null,"Vai bem no treino e mal nos dados de validação","PRB"]]
+},
+{
   id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
   desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
   grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
@@ -662,7 +674,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","osi","nuvem-nist","nuvem-servicos"]],
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","deep-learning","osi","nuvem-nist","nuvem-servicos"]],
   ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
