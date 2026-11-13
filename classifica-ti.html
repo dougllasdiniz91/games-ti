@@ -399,6 +399,32 @@ const JOGOS = [
   [null,"Robô que aprende a andar por tentativa e erro","REF"],[null,"Agente que aprende a jogar xadrez ou Go jogando","REF"],[null,"Equilíbrio entre exploração e explotação (exploration × exploitation)","REF"]]
 },
 {
+  id:"ml-tarefas", nome:"ML: o que cada algoritmo faz", ver:"40 algoritmos · 7 tarefas", antes:"novo",
+  desc:"Diga qual é a tarefa principal de cada algoritmo de aprendizado de máquina.",
+  grupos:[["CLA","Classificação (prever uma categoria)"],["REG","Regressão (prever um valor numérico)"],["AGR","Agrupamento / clustering"],["RED","Redução de dimensionalidade"],["ASS","Regras de associação"],["ANO","Detecção de anomalias"],["SER","Previsão de séries temporais"]],
+  itens:[
+  [null,"Regressão logística","CLA"],[null,"Naive Bayes","CLA"],[null,"Perceptron","CLA"],[null,"Máquina de vetores de suporte (SVM)","CLA"],[null,"K vizinhos mais próximos (KNN)","CLA"],[null,"Árvore de classificação (ID3, C4.5)","CLA"],[null,"Análise discriminante linear (LDA) como classificador","CLA"],
+  [null,"Regressão linear simples e múltipla","REG"],[null,"Regressão polinomial","REG"],[null,"Ridge (regularização L2)","REG"],[null,"Lasso (regularização L1)","REG"],[null,"Elastic Net","REG"],[null,"Regressão por vetores de suporte (SVR)","REG"],[null,"Árvore de regressão (CART)","REG"],
+  [null,"K-means","AGR"],[null,"K-medoids","AGR"],[null,"Agrupamento hierárquico (dendrograma)","AGR"],[null,"DBSCAN","AGR"],[null,"Mean Shift","AGR"],[null,"Modelos de mistura gaussiana (GMM)","AGR"],[null,"Mapas auto-organizáveis (SOM/Kohonen)","AGR"],
+  [null,"Análise de componentes principais (PCA)","RED"],[null,"Decomposição em valores singulares (SVD)","RED"],[null,"t-SNE","RED"],[null,"UMAP","RED"],[null,"Autoencoder (compressão em espaço latente)","RED"],
+  [null,"Apriori","ASS"],[null,"FP-Growth","ASS"],[null,"Eclat","ASS"],[null,"Métricas suporte, confiança e lift","ASS"],
+  [null,"Isolation Forest","ANO"],[null,"One-Class SVM","ANO"],[null,"Local Outlier Factor (LOF)","ANO"],[null,"Detecção de fraude em cartão sem exemplos rotulados","ANO"],
+  [null,"ARIMA","SER"],[null,"SARIMA (com sazonalidade)","SER"],[null,"Suavização exponencial (Holt-Winters)","SER"],[null,"Prophet","SER"],[null,"Média móvel","SER"],[null,"Prever a demanda dos próximos meses","SER"]]
+},
+{
+  id:"ia-modelos", nome:"IA: redes neurais e modelos", ver:"36 itens · 6 arquiteturas", antes:"novo",
+  desc:"Associe cada modelo, uso ou característica à arquitetura de rede neural certa.",
+  grupos:[["MLP","Rede neural densa (MLP)"],["CNN","Rede convolucional (CNN)"],["RNN","Rede recorrente (RNN, LSTM, GRU)"],["TRF","Transformer"],["GAN","Rede adversária generativa (GAN)"],["DIF","Modelo de difusão"]],
+  itens:[
+  [null,"Camadas totalmente conectadas com retropropagação (backpropagation)","MLP"],[null,"Perceptron multicamadas","MLP"],[null,"Resolve problemas não lineares, como o XOR, que o perceptron simples não resolve","MLP"],[null,"Classificação de dados tabulares com camadas ocultas","MLP"],
+  [null,"Filtros (kernels) que percorrem a imagem extraindo bordas e texturas","CNN"],[null,"Camadas de pooling para reduzir a dimensão espacial","CNN"],[null,"Classificação de imagens","CNN"],[null,"Detecção de objetos em imagens (YOLO)","CNN"],[null,"LeNet, AlexNet, VGG, ResNet","CNN"],[null,"Reconhecimento facial e leitura de raio-X","CNN"],
+  [null,"Processa sequências passo a passo, guardando um estado oculto","RNN"],[null,"Portas de entrada, esquecimento e saída","RNN"],[null,"Atenua o problema do desaparecimento do gradiente em sequências longas","RNN"],[null,"Previsão de séries temporais passo a passo","RNN"],[null,"Reconhecimento de fala antes da era dos transformers","RNN"],
+  [null,"Mecanismo de autoatenção (self-attention)","TRF"],[null,"Codificação posicional (positional encoding)","TRF"],[null,"Processa todos os tokens da sequência em paralelo","TRF"],[null,"Grandes modelos de linguagem (LLMs)","TRF"],[null,"GPT, BERT, T5","TRF"],[null,"Tradução automática e sumarização de textos","TRF"],[null,"Vision Transformer (ViT)","TRF"],
+  [null,"Gerador e discriminador competindo entre si","GAN"],[null,"StyleGAN, CycleGAN","GAN"],[null,"Rostos realistas de pessoas que não existem","GAN"],[null,"Treino instável e colapso de modo (mode collapse)","GAN"],[null,"Deepfakes da primeira geração","GAN"],
+  [null,"Aprende a remover ruído de uma imagem passo a passo","DIF"],[null,"Processo direto adiciona ruído; processo reverso reconstrói a imagem","DIF"],[null,"Stable Diffusion, DALL·E 2, Imagen","DIF"],[null,"Geração de imagens a partir de texto (text-to-image)","DIF"],[null,"Geração lenta por exigir muitos passos de remoção de ruído","DIF"],
+  [null,"Função de ativação ReLU entre camadas densas","MLP"],[null,"Campo receptivo local e compartilhamento de pesos","CNN"],[null,"Saída do passo anterior realimenta o passo seguinte","RNN"],[null,"Arquitetura codificador-decodificador baseada só em atenção (\u201cAttention Is All You Need\u201d)","TRF"]]
+},
+{
   id:"osi", nome:"Modelo OSI (ISO)", ver:"47 itens · 7 camadas", antes:"novo",
   desc:"Encaixe cada protocolo, padrão ou equipamento na camada do modelo OSI.",
   grupos:[["1","Física"],["2","Enlace de dados"],["3","Rede"],["4","Transporte"],["5","Sessão"],["6","Apresentação"],["7","Aplicação"]],
@@ -636,7 +662,7 @@ const SECOES = [
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
-  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","osi","nuvem-nist","nuvem-servicos"]],
+  ["Dados, IA, redes e nuvem",["sql","nosql","ia-ml","ml-tarefas","ia-modelos","osi","nuvem-nist","nuvem-servicos"]],
   ["Contêineres e orquestração",["conteineres","docker","kubernetes"]]
 ];
 
