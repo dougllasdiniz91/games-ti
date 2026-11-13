@@ -78,6 +78,7 @@ button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible,
 .barra .ver{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
 .barra .acoes{display:flex;gap:8px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;font-size:.9rem;text-decoration:none;color:var(--ink)}
+.btn-tema{gap:6px}
 .btn.pri{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
 select.btn{padding:8px}
 .placar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;font-size:.85rem;color:var(--muted);margin-bottom:10px}
@@ -182,6 +183,8 @@ body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
   .grupo>button{grid-template-columns:1fr auto;padding:10px 12px;row-gap:2px}
   .grupo .nm{grid-column:1 / -1;font-size:.78rem}
   .barra .acoes{width:100%} .barra .acoes>*{flex:1}
+  .barra .acoes{flex-wrap:nowrap} .barra .acoes>*{flex:1 1 0;min-width:0} .barra .acoes>select{flex-grow:3} .barra .acoes>button{flex-grow:2}
+  .barra .acoes>.btn-tema{flex:none;width:44px;padding:8px 0} .btn-tema .rot{display:none}
   .placar label{margin-left:0}
   #alvos:not(.oculta-lista) .grupos{grid-template-columns:1fr}
 }
@@ -709,7 +712,8 @@ function montarTela(){
         el("select",{class:"btn",id:"ordem",onchange:e=>iniciar(j,e.target.value)},
           el("option",{value:"aleatoria",selected:estado.ordem==="aleatoria"},"Ordem aleatória"),
           el("option",{value:"fracos",selected:estado.ordem==="fracos"},"Pontos fracos primeiro")),
-        el("button",{class:"btn",onclick:()=>iniciar(j,estado.ordem)},"Recomeçar"))),
+        el("button",{class:"btn",onclick:()=>iniciar(j,estado.ordem)},"Recomeçar"),
+        el("button",{class:"btn btn-tema",type:"button","aria-label":"Alternar tema",title:"Alternar tema",onclick:alternarTema},"🌓",el("span",{class:"rot"},"Tema")))),
     el("div",{class:"placar"},
       el("span",{},el("b",{id:"p-rest"}),"restantes"),
       el("span",{class:"ok"},el("b",{id:"p-ok"}),"acertos"),
