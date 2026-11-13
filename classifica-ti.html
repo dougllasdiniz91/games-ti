@@ -277,6 +277,16 @@ const JOGOS = [
   ["MEA01","Gerenciar o monitoramento de desempenho e conformidade","MEA"],["MEA02","Gerenciar o sistema de controle interno","MEA"],["MEA03","Gerenciar a conformidade com requisitos externos","MEA"],["MEA04","Gerenciar a asseguração (assurance)","MEA"]]
 },
 {
+  id:"cobit2019fund", nome:"COBIT 2019: fundamentos", ver:"6 + 3 princípios · 7 componentes · 11 fatores de design", antes:"COBIT 5",
+  desc:"Diga se cada item é princípio do sistema de governança, princípio do framework, componente do sistema de governança ou fator de design.",
+  grupos:[["PSG","Princípios do sistema de governança"],["PFW","Princípios do framework de governança"],["COM","Componentes do sistema de governança"],["FD","Fatores de design"]],
+  itens:[
+  [null,"Fornecer valor às partes interessadas","PSG"],[null,"Abordagem holística","PSG"],[null,"Sistema de governança dinâmico","PSG"],[null,"Governança distinta da gestão","PSG"],[null,"Adaptado às necessidades da organização","PSG"],[null,"Sistema de governança de ponta a ponta","PSG"],
+  [null,"Baseado em um modelo conceitual","PFW"],[null,"Aberto e flexível","PFW"],[null,"Alinhado aos principais padrões, frameworks e regulamentos","PFW"],
+  [null,"Processos","COM"],[null,"Estruturas organizacionais","COM"],[null,"Princípios, políticas e procedimentos","COM"],[null,"Informação","COM"],[null,"Cultura, ética e comportamento","COM"],[null,"Pessoas, habilidades e competências","COM"],[null,"Serviços, infraestrutura e aplicações","COM"],
+  [null,"Estratégia corporativa","FD"],[null,"Metas corporativas","FD"],[null,"Perfil de risco","FD"],[null,"Problemas relacionados a I&T","FD"],[null,"Cenário de ameaças","FD"],[null,"Requisitos de conformidade","FD"],[null,"Papel da TI","FD"],[null,"Modelo de sourcing de TI","FD"],[null,"Métodos de implementação de TI","FD"],[null,"Estratégia de adoção de tecnologia","FD"],[null,"Porte da organização","FD"]]
+},
+{
   id:"itil4", nome:"ITIL 4", ver:"34 práticas · 3 categorias", antes:"ITIL 2011 (v3)",
   desc:"Classifique cada prática de gerenciamento na sua categoria.",
   grupos:[["GER","Práticas de gerenciamento geral"],["SRV","Práticas de gerenciamento de serviço"],["TEC","Práticas de gerenciamento técnico"]],
@@ -284,6 +294,16 @@ const JOGOS = [
   [null,"Gerenciamento de arquitetura","GER"],[null,"Melhoria contínua","GER"],[null,"Gerenciamento de segurança da informação","GER"],[null,"Gerenciamento do conhecimento","GER"],[null,"Medição e relatórios","GER"],[null,"Gerenciamento de mudança organizacional","GER"],[null,"Gerenciamento de portfólio","GER"],[null,"Gerenciamento de projetos","GER"],[null,"Gerenciamento de relacionamento","GER"],[null,"Gerenciamento de riscos","GER"],[null,"Gerenciamento financeiro de serviços","GER"],[null,"Gerenciamento de estratégia","GER"],[null,"Gerenciamento de fornecedores","GER"],[null,"Gerenciamento de força de trabalho e talentos","GER"],
   [null,"Gerenciamento de disponibilidade","SRV"],[null,"Análise de negócio","SRV"],[null,"Gerenciamento de capacidade e desempenho","SRV"],[null,"Habilitação de mudança","SRV"],[null,"Gerenciamento de incidente","SRV"],[null,"Gerenciamento de ativos de TI","SRV"],[null,"Monitoramento e gerenciamento de eventos","SRV"],[null,"Gerenciamento de problema","SRV"],[null,"Gerenciamento de liberação","SRV"],[null,"Gerenciamento do catálogo de serviços","SRV"],[null,"Gerenciamento da configuração de serviço","SRV"],[null,"Gerenciamento de continuidade de serviço","SRV"],[null,"Desenho de serviço","SRV"],[null,"Central de serviço","SRV"],[null,"Gerenciamento de nível de serviço","SRV"],[null,"Gerenciamento de requisição de serviço","SRV"],[null,"Validação e teste de serviço","SRV"],
   [null,"Gerenciamento de implantação","TEC"],[null,"Gerenciamento de infraestrutura e plataforma","TEC"],[null,"Desenvolvimento e gerenciamento de software","TEC"]]
+},
+{
+  id:"itil4fund", nome:"ITIL 4: fundamentos", ver:"7 princípios · 4 dimensões · 6 atividades · componentes do SVS", antes:"ITIL 2011 (v3)",
+  desc:"Diga se cada item é princípio orientador, dimensão do gerenciamento de serviço, atividade da cadeia de valor ou componente do sistema de valor de serviço (SVS). Lembrete: os princípios orientadores também são um componente do SVS.",
+  grupos:[["PO","Princípios orientadores"],["DIM","Quatro dimensões do gerenciamento de serviço"],["CVS","Atividades da cadeia de valor de serviço"],["SVS","Componentes do sistema de valor de serviço"]],
+  itens:[
+  [null,"Foco no valor","PO"],[null,"Começar onde você está","PO"],[null,"Progredir iterativamente com feedback","PO"],[null,"Colaborar e promover visibilidade","PO"],[null,"Pensar e trabalhar de forma holística","PO"],[null,"Manter de forma simples e prática","PO"],[null,"Otimizar e automatizar","PO"],
+  [null,"Organizações e pessoas","DIM"],[null,"Informação e tecnologia","DIM"],[null,"Parceiros e fornecedores","DIM"],[null,"Fluxos de valor e processos","DIM"],
+  [null,"Planejar","CVS"],[null,"Melhorar","CVS"],[null,"Engajar","CVS"],[null,"Desenho e transição","CVS"],[null,"Obter/construir","CVS"],[null,"Entregar e suportar","CVS"],
+  [null,"Governança","SVS"],[null,"Cadeia de valor de serviço","SVS"],[null,"Práticas","SVS"],[null,"Melhoria contínua","SVS"]]
 },
 {
   id:"pmbok8", nome:"PMBOK 8", ver:"6 princípios · 7 domínios · 5 áreas de foco", antes:"novo",
@@ -612,7 +632,7 @@ const JOGOS = [
 
 /* Seções do menu */
 const SECOES = [
-  ["Governança e serviços",["cobit2019","itil4","iso38500"]],
+  ["Governança e serviços",["cobit2019","cobit2019fund","itil4","itil4fund","iso38500"]],
   ["Segurança e continuidade",["iso27001","iso27002","iso27005","iso22301"]],
   ["Projetos e métodos ágeis",["pmbok8","pmbok8proc","pmbok7","scrum","xp"]],
   ["Engenharia de software",["bpmn","uml25","gof","testes","iso25010","devops"]],
